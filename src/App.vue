@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" dark v-if="!$route.path.includes('login')">
+      <v-btn @click="signOut" dark color="red">تسجيل خروج</v-btn>
       <v-spacer></v-spacer>
       <h2>شركة اعمدة الشموخ</h2>
     </v-app-bar>
@@ -40,6 +41,20 @@ export default {
     // textSnackbar: function () {
     //   return this.$store.state.textSnackbar;
     // },
+  },
+  methods: {
+    signOut: function () {
+      this.$store.dispatch("resetFields");
+      this.user_type = -1;
+      console.log("in log out ");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user_type");
+
+      localStorage.removeItem("user_name");
+      this.$store.dispatch("logout").then(() => {
+        this.$router.replace("/login");
+      });
+    },
   },
 };
 </script>

@@ -48,6 +48,9 @@
           <td class="text-start" v-else-if="item.status == 2">
             <v-chip color="gray">قيد التفيذ</v-chip>
           </td>
+          <td class="text-start" v-else-if="item.status == 3">
+            <v-chip color="primary">نفذت</v-chip>
+          </td>
           <td class="text-start">{{ item.place }}</td>
           <td class="text-start">{{ item.name_customer }}</td>
           <td class="text-start">{{ item.degree }}/{{ item.type }}</td>
@@ -62,7 +65,10 @@
           <td class="text-start mr-5 ml-5">{{ item.date }}</td>
 
           <td class="text-start">{{ item.time }}</td>
-          <td class="text-start">{{ item.notes }}</td>
+          <td class="text-start" v-if="item.notes == null">
+            <v-chip dark color="new">لايوجد ملاحظات</v-chip>
+          </td>
+          <td class="text-start" v-else>{{ item.notes }}</td>
         </tr>
       </template>
       <template v-slot:top>

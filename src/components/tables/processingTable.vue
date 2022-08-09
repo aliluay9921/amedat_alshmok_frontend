@@ -85,7 +85,7 @@
                               <b>رقم الفاتورة : {{ invoicement_no + 1 }}</b>
                             </span>
                             <span style="padding-left: 75px">
-                              <b>التسلسل: </b>
+                              <b>التسلسل: {{ invoicement_sequence + 1 }} </b>
                             </span>
                             <span style="padding-left: 75px"
                               ><b
@@ -146,6 +146,7 @@
                               type="text"
                               style="text-align: center"
                               v-model="car_number"
+                              readonly
                             />
                           </div>
                         </div>
@@ -290,8 +291,10 @@
           <td class="text-start mr-5 ml-5">{{ item.date }}</td>
 
           <td class="text-start">{{ item.time }}</td>
-          <td class="text-start">{{ item.notes }}</td>
-
+          <td class="text-start" v-if="item.notes == null">
+            <v-chip dark color="new">لايوجد ملاحظات</v-chip>
+          </td>
+          <td class="text-start" v-else>{{ item.notes }}</td>
           <td class="text-start">
             <v-btn dark color="green" @click="done(item)">بدأ التنفيذ </v-btn>
           </td>
@@ -479,6 +482,8 @@ export default {
       ],
       car_sequence: "",
       car_number: "",
+      invoicement_no: "",
+      invoicement_sequence: "",
       item: {},
       pagination: {},
       items: [5, 10, 25, 50, 100],
@@ -495,10 +500,7 @@ export default {
     // salesCategoriesSending() {
     //   return this.$store.state.saleCategory.sales_categories_sending;
     // },
-    invoicement_no() {
-      return this.$store.state.invoicement.invoicemnts.length;
-      // state.invoicemnts.length
-    },
+
     saleCategoryQuery: {
       set(val) {
         this.$store.state.saleCategory.saleCategoryQuery = val;
@@ -527,6 +529,9 @@ export default {
     table_loading() {
       return this.$store.state.saleCategory.table_loading;
     },
+    invoicemnts() {
+      return this.$store.state.invoicement.invoicemnts;
+    },
   },
   methods: {
     close() {
@@ -547,17 +552,21 @@ export default {
       data["sale_category_id"] = this.sale_category_id;
       data["driver_name"] = this.driver_name;
       data["car_number"] = this.car_number;
+      data["car_sequence"] = this.car_sequence;
+
       data["quantity_car"] = this.quantity_car;
       data["invoice_no"] = this.invoicement_no + 1;
-      data["sequence"] = 0;
+      data["sequence"] = this.invoicement_sequence + 1;
 
       this.$store.dispatch("invoicement/addInvoicemnt", data);
       this.$store.dispatch("saleCategory/getSalesCategories");
       this.$store.dispatch("invoicement/getInvoicemnts");
-      this.car_number = "";
-      this.driver_name = "";
-      this.quantity_car = "";
-      this.car_sequence = "";
+      this.dialog = false;
+
+      // this.car_number = "";
+      // this.driver_name = "";
+      // this.quantity_car = "";
+      // this.car_sequence = "";
     },
     done(item) {
       this.$store.dispatch("invoicement/getInvoicemnts");
@@ -574,6 +583,14 @@ export default {
       this.name_customer = item.name_customer;
       this.employee = item.employee.full_name;
 
+      let invoice = this.invoicemnts.filter(
+        (e) => e.sale_category_id == this.sale_category_id
+      );
+      console.log(invoice.length);
+      console.log(this.invoicemnts[0]);
+      this.invoicement_sequence = invoice.length;
+      this.invoicement_no = this.invoicemnts[0].countinvoicemnts;
+      // console.log(invoice[0].countinvoicemnts);
       // this.$store.dispatch("saleCategory/sendingToProcessing", item);
     },
 
@@ -608,11 +625,9 @@ export default {
   created() {
     // this.getSalesSendingCategories();
     this.$store.dispatch("saleCategory/resetFields");
+    this.$store.dispatch("invoicement/getInvoicemnts");
   },
   watch: {
-    invoicement_no() {
-      this.$store.dispatch("invoicement/getInvoicemnts");
-    },
     pagination: {
       handler() {
         this.getSalesCategories();

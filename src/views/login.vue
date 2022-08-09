@@ -59,7 +59,7 @@ export default {
             if (user_type == 0) {
               this.$router.replace("/");
             } else if (user_type == 1) {
-              this.$router.replace("/school");
+              this.$router.replace("/processing");
             }
           }
         })

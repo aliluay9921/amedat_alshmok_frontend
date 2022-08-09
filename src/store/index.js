@@ -100,7 +100,6 @@ export default new Vuex.Store({
         localStorage.removeItem("token");
         localStorage.removeItem("user_name");
         localStorage.removeItem("user_type");
-        localStorage.removeItem("school_name");
         delete axios.defaults.headers.common["Authorization"];
         resolve();
       });

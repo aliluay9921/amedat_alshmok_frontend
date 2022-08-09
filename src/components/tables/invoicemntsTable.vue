@@ -25,6 +25,7 @@
         </v-row>
       </v-container>
     </template>
+
     <template>
       <v-container>
         <v-row justify="center">
@@ -39,17 +40,27 @@
                     <v-row>
                       <v-col sm="12" md="12" lg="12" justify="center">
                         <div class="title text-center" justify="center">
-                          <h1
+                          <h2
                             style="
                               margin: 0 auto;
                               border-top: 1px dashed #bbb;
                               padding: 10px;
                               text-align: center;
+                              letter-spacing: 2px;
                             "
                           >
-                            شركة اعمدة الشموخ للمقاولات العامة المحدودة وتجهيز
-                            الكونكريت
-                          </h1>
+                            شركة اعمدة الشموخ للمقاولات العامة المحدودة
+                          </h2>
+                          <h2
+                            style="
+                              margin: 0 auto;
+                              padding: 10px;
+                              text-align: center;
+                              letter-spacing: 2px;
+                            "
+                          >
+                            وتجهيز الكونكريت
+                          </h2>
                         </div>
                         <div class="numbers" justify="center">
                           <p
@@ -59,7 +70,7 @@
                               text-align: center;
                             "
                           >
-                            <b>07711119970-07811119970-07705333603</b>
+                            <b>07711119970 - 07811119970 - 07705333603</b>
                           </p>
                         </div>
                         <hr />
@@ -75,11 +86,15 @@
                               <b>رقم الفاتورة : {{ invoice_no }}</b>
                             </span>
                             <span style="padding-left: 75px">
-                              <b>التسلسل: </b>
+                              <b>التسلسل: {{ sequence }} </b>
                             </span>
                             <span style="padding-left: 75px"
-                              ><b>التأريخ : {{ date }} </b></span
+                              ><b
+                                >التأريخ :
+                                {{ date }}
+                              </b></span
                             >
+
                             <span style="padding-left: 55px">
                               <b>الوقت : {{ time }} </b>
                             </span>
@@ -91,13 +106,27 @@
                       <div class="col-4 d-block">
                         <div class="details">
                           <div class="title">
-                            <label for="" color="primary"> اسم السائق</label>
+                            <label for=""> اسم السائق</label>
                           </div>
                           <div class="data">
                             <input
                               type="text"
                               style="text-align: center"
                               v-model="driver_name"
+                              readonly
+                            />
+                          </div>
+                        </div>
+                        <div class="details">
+                          <div class="title">
+                            <label for=""> تسلسل السيارة</label>
+                          </div>
+                          <div class="data">
+                            <input
+                              type="text"
+                              style="text-align: center"
+                              v-model="car_sequence"
+                              readonly
                             />
                           </div>
                         </div>
@@ -110,6 +139,7 @@
                               type="text"
                               style="text-align: center"
                               v-model="car_number"
+                              readonly
                             />
                           </div>
                         </div>
@@ -126,6 +156,12 @@
                               v-model="quantity_car"
                             />
                           </div>
+                          <label
+                            for=""
+                            style="margin-top: 10px; margin-right: 15px"
+                          >
+                            <b>M3</b>
+                          </label>
                         </div>
                         <div class="details">
                           <div class="title">
@@ -189,18 +225,14 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
+
                 <v-col cols="auto">
-                  <v-btn
-                    secondary
-                    color="secondary"
-                    @click="add_process"
-                    v-print="'#printMe'"
-                  >
+                  <v-btn secondary color="secondary" v-print="'#printMe'">
                     طباعة
                   </v-btn>
                 </v-col>
                 <v-col cols="auto">
-                  <v-btn secondary color="secondary" @click="dialog = false">
+                  <v-btn secondary color="secondary" @click="close">
                     غلق
                   </v-btn>
                 </v-col>
@@ -210,17 +242,21 @@
         </v-row>
       </v-container>
     </template>
-
     <v-data-table
       :headers="headers"
       :items="invoicemnts"
-      :search="search"
+      :options.sync="pagination"
+      :loading="table_loading || false"
+      :page.sync="pagination.page"
+      :items-per-page="pagination.itemsPerPage"
+      hide-default-footer
       loading-text="جاري التحميل يرجى الأنتظار"
     >
       <template v-slot:item="{ item }">
         <tr>
           <td class="text-start">{{ item.driver_name }}</td>
           <td class="text-start">{{ item.car_number }}</td>
+          <td class="text-start">{{ item.car_sequence }}</td>
           <td class="text-start">{{ item.quantity_car }}</td>
           <td class="text-start">{{ item.invoice_no }}</td>
           <td class="text-start">{{ item.sequence }}</td>
@@ -231,19 +267,41 @@
         </tr>
       </template>
       <template v-slot:top>
-        <v-toolbar>
+        <v-toolbar flat>
+          <v-toolbar-title>جدول المبيعات</v-toolbar-title>
+
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-text-field
-            v-model="search"
+            v-model="invoicemntQuery"
+            @input="queryChange"
             append-icon="mdi-magnify"
             label="بحث"
             single-line
             hide-details
+            class="mr-5"
           ></v-text-field>
         </v-toolbar>
       </template>
     </v-data-table>
+    <div class="text-center pt-2 mt-3">
+      <v-row>
+        <v-col align-self="center" cols="2" offset="2">
+          <v-select
+            v-model="pagination.itemsPerPage"
+            :items="items"
+            label="عدد العناصر في الصفحة"
+          ></v-select>
+        </v-col>
+        <v-col align-self="center" cols="4">
+          <v-pagination
+            v-model="pagination.page"
+            :length="pageCount"
+            circle
+          ></v-pagination>
+        </v-col>
+      </v-row>
+    </div>
   </v-card>
 </template>
 <script>
@@ -254,7 +312,9 @@ export default {
       rules: [(value) => !!value || "هذا الحقل مطلوب."],
       driver_name: "",
       car_number: "",
+      car_sequence: "",
       actual_quantity: "",
+      sequence: "",
       quantity_car: "",
       name_representative: "",
       phone_number: "",
@@ -264,6 +324,7 @@ export default {
       type: "",
       employee: "",
       name_customer: "",
+      invoicement_sequence: "",
       invoice_no: "",
       dialog: false,
       item: {},
@@ -282,6 +343,12 @@ export default {
         {
           text: "رقم السيارة ",
           value: "car_number",
+          align: "start",
+          class: "secondary white--text title",
+        },
+        {
+          text: "تسلسل السيارة ",
+          value: "car_sequence",
           align: "start",
           class: "secondary white--text title",
         },
@@ -316,6 +383,8 @@ export default {
           class: "secondary white--text title",
         },
       ],
+      pagination: {},
+      items: [5, 10, 25, 50, 100],
     };
   },
   computed: {
@@ -329,17 +398,32 @@ export default {
     table_loading() {
       return this.$store.state.invoicement.table_loading;
     },
+    pageCount: function () {
+      return this.$store.state.invoicement.pageCount;
+    },
+    totalItems: function () {
+      return this.$store.state.invoicement.sales_categories.length;
+    },
+    invoicemntQuery: {
+      set(val) {
+        this.$store.state.invoicement.invoicemntQuery = val;
+      },
+      get() {
+        return this.$store.state.invoicement.invoicemntQuery;
+      },
+    },
+    invoicemnt_params: {
+      set(val) {
+        this.$store.state.invoicement.params = val;
+      },
+      get() {
+        return this.$store.state.invoicement.params;
+      },
+    },
   },
   methods: {
-    add_process() {
-      let data = {};
-      data["driver_name"] = this.driver_name;
-      data["car_number"] = this.car_number;
-      data["quantity_car"] = this.quantity_car;
-      data["invoice_no"] = this.invoice_no;
-      data["sequence"] = this.sequence;
-
-      console.log(data);
+    close() {
+      this.dialog = false;
     },
     done(item) {
       console.log(item);
@@ -349,6 +433,7 @@ export default {
       this.car_number = item.car_number;
       this.quantity_car = item.quantity_car;
       this.invoice_no = item.invoice_no;
+      this.car_sequence = item.car_sequence;
       this.sequence = item.sequence;
       this.type = item.process.type;
       this.time = item.process.time;
@@ -359,13 +444,42 @@ export default {
       this.employee = item.employee.full_name;
       // this.$store.dispatch("saleCategory/sendingToProcessing", item);
     },
-
+    queryChange(val) {
+      this.searchDebounce();
+    },
     getInvoicemnts() {
+      let pagination = this.pagination;
+      let par = {
+        ...pagination,
+      };
+      // // console.log(this.query);
+      this.invoicemnt_params = par;
       this.$store.dispatch("invoicement/getInvoicemnts");
+    },
+
+    searchDebounce() {
+      clearTimeout(this._timerId);
+      // delay new call 1000ms
+      this._timerId = setTimeout(() => {
+        this.$store.dispatch("invoicement/resetFields");
+        this.pagination.page = 1;
+        this.getInvoicemnts();
+      }, 1000);
     },
   },
   created() {
-    this.getInvoicemnts();
+    this.$store.dispatch("invoicement/resetFields");
+
+    // this.getInvoicemnts();
+  },
+  watch: {
+    pagination: {
+      handler() {
+        this.getInvoicemnts();
+        this.invoicemnt_params.page = 1;
+      },
+      deep: true,
+    },
   },
 };
 </script>

@@ -62,9 +62,10 @@ const ExamModule = {
             state.sela_category_state = "done";
             state.table_loading = false;
         },
-        done_invoice_succsess(state, sale_category) {
-            let index = state.sales_categories.findIndex((e) => e.id == sale_category.id);
-            Vue.set(state.sales_categories, index, sale_category);
+        done_invoice_succsess(state, done_sale_category) {
+            console.log(done_sale_category)
+            let index = state.sales_categories.findIndex((e) => e.id == done_sale_category.id);
+            Vue.set(state.sales_categories, index, done_sale_category);
             state.sela_category_state = "done";
             state.table_loading = false;
         }
@@ -93,6 +94,7 @@ const ExamModule = {
             let skip = (data.page - 1) * data.itemsPerPage;
             let limit = data.itemsPerPage;
             let query = "";
+            var filterSaleCategory = "";
             if (
                 state.saleCategoryQuery != undefined &&
                 state.saleCategoryQuery != null &&
@@ -100,7 +102,8 @@ const ExamModule = {
             ) query = `&query=${state.saleCategoryQuery}`;
 
             if (Object.keys(state.filter).length != 0)
-                var filterSaleCategory = "&filter=" + JSON.stringify(state.filter);
+                filterSaleCategory = "&filter=" + JSON.stringify(state.filter);
+            console.log(filterSaleCategory);
             return new Promise((resolve, reject) => {
 
                 axios({

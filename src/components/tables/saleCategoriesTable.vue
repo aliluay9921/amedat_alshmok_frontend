@@ -60,8 +60,10 @@
           <td class="text-start">{{ item.date }}</td>
 
           <td class="text-start">{{ item.time }}</td>
-          <td class="text-start">{{ item.notes }}</td>
-
+          <td class="text-start" v-if="item.notes == null">
+            <v-chip dark color="new">لايوجد ملاحظات</v-chip>
+          </td>
+          <td class="text-start" v-else>{{ item.notes }}</td>
           <td
             class="text-start"
             style="display: flex; flex-diractions: row"

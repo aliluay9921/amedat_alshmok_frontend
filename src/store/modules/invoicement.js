@@ -7,6 +7,13 @@ const invoicement = {
         invoicemnts: [],
         invoicemnts_state: "done",
         table_loading: false,
+        invoicemntQuery: "",
+        pageCount: 1,
+        params: {
+
+            page: 1,
+            itemsPerPage: 10,
+        },
     }),
     getters: {},
     mutations: {
@@ -39,21 +46,38 @@ const invoicement = {
             state.invoicemnt_state = "done";
             state.invoicemnts = [];
             state.table_loading = false;
-            state.filter = {}
+            state.params = {
+                page: 1,
+                itemsPerPage: 10,
+            };
         },
         async getInvoicemnts({ commit, state, dispatch, rootState }) {
             if (state.invoicemnts_state != "done") return -1;
             state.table_loading = true;
             console.log("here")
+            let data = state.params;
 
+            let skip = (data.page - 1) * data.itemsPerPage;
+            let limit = data.itemsPerPage;
+            let query = "";
+            if (
+                state.invoicemntQuery != undefined &&
+                state.invoicemntQuery != null &&
+                state.invoicemntQuery.length > 0
+            ) query = `&query=${state.invoicemntQuery}`;
             return new Promise((resolve, reject) => {
 
                 axios({
-                    url: `${rootState.server}` + "/api/get_invoicemnts",
+                    url: `${rootState.server}` + "/api/get_invoicemnts" + "?skip=" + skip +
+                        "&limit=" +
+                        limit +
+                        query,
                     method: "GET",
                 }).then(resp => {
 
                     state.table_loading = false;
+                    state.pageCount = resp.data.count;
+
                     commit('invoicemnts_success', resp.data.result)
                     dispatch("snackbarToggle", { toggle: true, text: resp.data.message }, { root: true });
                     resolve(resp);
