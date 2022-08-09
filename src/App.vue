@@ -6,7 +6,7 @@
       <h2>شركة اعمدة الشموخ</h2>
     </v-app-bar>
     <v-main>
-      <!-- <v-snackbar v-model="snackbar" shaped :multi-line="true">
+      <v-snackbar v-model="snackbar" shaped :multi-line="true">
         <div v-for="(text, index) in textSnackbar.split('\n')" :key="index">
           {{ index == 0 ? "" : index + "-" }} {{ text }}
         </div>
@@ -16,7 +16,7 @@
             أغلاق
           </v-btn>
         </template>
-      </v-snackbar> -->
+      </v-snackbar>
       <router-view />
     </v-main>
   </v-app>
@@ -30,17 +30,17 @@ export default {
     //
   }),
   computed: {
-    // snackbar: {
-    //   set: function () {
-    //     this.$store.dispatch("snackbarToggle", { toggle: false });
-    //   },
-    //   get: function () {
-    //     return this.$store.state.snackbar;
-    //   },
-    // },
-    // textSnackbar: function () {
-    //   return this.$store.state.textSnackbar;
-    // },
+    snackbar: {
+      set: function () {
+        this.$store.dispatch("snackbarToggle", { toggle: false });
+      },
+      get: function () {
+        return this.$store.state.snackbar;
+      },
+    },
+    textSnackbar: function () {
+      return this.$store.state.textSnackbar;
+    },
   },
   methods: {
     signOut: function () {

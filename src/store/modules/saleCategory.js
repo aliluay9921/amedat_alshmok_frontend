@@ -210,7 +210,7 @@ const ExamModule = {
                 commit("sale_category_request");
                 axios({
                     url: `${rootState.server}` + "/api/sending_to_processing",
-                    data: { sale_category_id: data.id },
+                    data: data,
                     headers: {
                         "Content-Type": "application/json",
 

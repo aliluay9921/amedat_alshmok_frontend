@@ -24,15 +24,48 @@
 
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-text-field
-            v-model="saleCategoryQuery"
-            @input="queryChange"
-            append-icon="mdi-magnify"
-            label="بحث"
-            single-line
-            hide-details
-            class="mr-5"
-          ></v-text-field>
+          <v-row style="margin-top: 15px">
+            <v-col>
+              <v-text-field
+                v-model="saleCategoryQuery"
+                @input="queryChange"
+                append-icon="mdi-magnify"
+                label="بحث"
+                single-line
+                hide-details
+                class="mr-5"
+              ></v-text-field>
+              <v-spacer></v-spacer>
+            </v-col>
+            <v-col>
+              <v-menu
+                v-model="menu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+                style="margin-top: 60px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="date"
+                    label="التأريخ"
+                    append-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="date"
+                  @input="menu = false"
+                  :locale="currentLocale"
+                  @change="filter"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
         </v-toolbar>
       </template>
       <template v-slot:item="{ item }">
@@ -147,13 +180,81 @@
         </v-dialog>
       </v-row>
     </template>
+    <!-- check proces type before sending to proces اختيار المعمل قبل الترحيل -->
+    <template>
+      <v-row justify="center">
+        <v-dialog v-model="dialog" persistent max-width="790">
+          <v-card>
+            <v-card-title class="text-h5 secondary white--text">
+              اختيار المعمل
+            </v-card-title>
+            <v-card-text class="mt-5 text-h5 dark--text"
+              ><b>يجب اختيار المعمل المراد الترحيل اليه </b>
+              <v-row class="mt-5">
+                <v-col cols="12" sm="4">
+                  <v-btn
+                    v-bind:class="type === 1 ? 'success' : 'error'"
+                    color="white"
+                    elevation="5"
+                    @click="select_procsess((type = 1))"
+                    outlined
+                    rounded
+                    >معمل الدورة</v-btn
+                  >
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <v-btn
+                    v-bind:class="type === 2 ? 'success' : 'error'"
+                    elevation="5"
+                    @click="select_procsess((type = 2))"
+                    outlined
+                    color="white"
+                    rounded
+                    >معمل العامرية</v-btn
+                  >
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <v-btn
+                    v-bind:class="type === 3 ? 'success' : 'error'"
+                    color="white"
+                    elevation="5"
+                    @click="select_procsess((type = 3))"
+                    outlined
+                    rounded
+                    >مشترك</v-btn
+                  >
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="close"
+              >
+                غلق
+              </v-btn>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="confirmSending()"
+              >
+                تأكيد الاختيار
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
   </v-card>
 </template>
 <script>
 export default {
   data() {
     return {
-      search: "",
       dialog: false,
       dialog1: false,
       item: {},
@@ -259,6 +360,10 @@ export default {
           class: "secondary white--text title ",
         },
       ],
+      menu: null,
+      currentLocale: "ar",
+      date: "2022-08-09",
+      type: "",
     };
   },
   computed: {
@@ -291,11 +396,48 @@ export default {
       return this.$store.state.saleCategory.table_loading;
     },
   },
+
   methods: {
+    close() {
+      this.dialog = false;
+      this.type = "";
+    },
+    select_procsess(type) {
+      console.log(type);
+      this.type = type;
+    },
+    sending(item) {
+      console.log(item);
+      this.item = item;
+      console.log(this.item);
+      this.dialog = true;
+      // this.$store.dispatch("saleCategory/sendingToProcessing", item);
+    },
+    confirmSending() {
+      let data = {};
+
+      data["sale_category_id"] = this.item.id;
+      data["proces_type"] = this.type;
+      console.log(data);
+      if (this.type == "") {
+        this.dialog = true;
+      }
+      this.$store.dispatch("saleCategory/sendingToProcessing", data);
+      this.dialog = false;
+      this.type = "";
+    },
+
     reloadPage() {
       location.reload();
       // this.$store.dispatch("saleCategory/resetFields");
       // this.getSalesCategories();
+    },
+    filter() {
+      var filter = { name: "date", value: this.date };
+      Object.assign(this.$store.state.saleCategory.filter, filter);
+      this.$store.state.saleCategory.selected_object = {};
+      this.$store.state.saleCategory.isEdit = false;
+      this.$store.dispatch("saleCategory/getSalesCategories");
     },
     getItem(item) {
       this.dialog1 = true;
@@ -310,23 +452,20 @@ export default {
 
     selectedRaw(item) {
       console.log(item);
-      this.$store.state.saleCategory.selected_object = {};
-      Object.assign(this.$store.state.saleCategory.selected_object, item);
-      this.$store.state.saleCategory.isEdit = true;
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
+      if (item.status == 0) {
+        this.$store.state.saleCategory.selected_object = {};
+        Object.assign(this.$store.state.saleCategory.selected_object, item);
+        this.$store.state.saleCategory.isEdit = true;
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "smooth",
+        });
+      }
     },
 
     queryChange(val) {
       this.searchDebounce();
-    },
-    sending(item) {
-      console.log(item);
-
-      this.$store.dispatch("saleCategory/sendingToProcessing", item);
     },
 
     getSalesCategories() {
@@ -336,6 +475,11 @@ export default {
       };
       // // console.log(this.query);
       this.sales_categories_params = par;
+      const current = new Date();
+      const moment = require("moment");
+      this.date = moment(current).format("YYYY-MM-DD");
+      var filter = { name: "date", value: this.date };
+      Object.assign(this.$store.state.saleCategory.filter, filter);
       this.$store.dispatch("saleCategory/getSalesCategories");
     },
     searchDebounce() {
@@ -361,6 +505,12 @@ export default {
       },
       deep: true,
     },
+    // date() {
+    //   const current = new Date();
+    //   const moment = require("moment");
+    //   this.date = moment(current).format("YYYY-MM-DD");
+    //   console.log(moment(current).format("YYYY-MM-DD"));
+    // },
   },
 };
 </script>

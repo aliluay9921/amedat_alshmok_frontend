@@ -4,11 +4,36 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import Axios from "axios";
+// import moment from 'moment';
+import moment from 'moment-timezone'
 
 import Print from 'vue-print-nb'
+import LottieAnimation from "lottie-vuejs/src/LottieAnimation.vue"; // import lottie-vuejs
+Vue.use(LottieAnimation); // add lottie-animation to your global scope
 
 Vue.use(Print);
-Vue.use(require('vue-moment'));
+
+
+const moment_locale = require('moment')
+require('moment/locale/ar')
+
+Vue.use(require('vue-moment'), {
+  moment,
+  moment_locale,
+});
+
+// var moment = require('moment');
+// console.log(moment.locale()); // en
+// moment.updateLocale('en', {
+//   meridiemParse: /[ap]\.?m?\.?/i
+// });
+moment.updateLocale('en', {
+  isPM: function (input) {
+    return ((input + '').toLowerCase()[0] === 'p');
+  },
+  isAM: "asd"
+
+});
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = Axios;

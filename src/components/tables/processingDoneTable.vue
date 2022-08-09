@@ -81,24 +81,24 @@
                               text-align: right;
                             "
                           >
-                            <span style="padding-left: 75px">
+                            <span style="padding-left: 70px">
                               <b>رقم الفاتورة : {{ invoicement_no + 1 }}</b>
                             </span>
-                            <span style="padding-left: 75px">
+                            <span style="padding-left: 70px">
                               <b>التسلسل: {{ invoicement_sequence + 1 }} </b>
                             </span>
-                            <span style="padding-left: 75px"
+                            <span style="padding-left: 70px"
                               ><b
                                 >التأريخ :
                                 {{ new Date() | moment("DD.MM.YYYY") }}
                               </b></span
                             >
 
-                            <span style="padding-left: 55px">
+                            <!-- <span style="padding-left: 35px">
                               <b
-                                >الوقت : {{ new Date() | moment(" h:mm:ss") }}
+                                >الوقت : {{ new Date() | moment(" h:mm:ss A") }}
                               </b>
-                            </span>
+                            </span> -->
                           </p>
                         </div>
                       </v-col>

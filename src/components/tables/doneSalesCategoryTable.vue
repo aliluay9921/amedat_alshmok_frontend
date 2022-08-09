@@ -1,7 +1,7 @@
 <template>
   <v-card class="elevation-1">
     <!-- dilog to done and print invoice -->
-    <template>
+    <template v-if="user_type != 2 && user_type == 1">
       <v-container>
         <v-row justify="center">
           <v-col cols="12" sm="3">
@@ -208,11 +208,15 @@ export default {
           class: "secondary white--text title",
         },
       ],
+
       pagination: {},
       items: [5, 10, 25, 50, 100],
     };
   },
   computed: {
+    user_type() {
+      return localStorage.user_type;
+    },
     saleCategoryQuery: {
       set(val) {
         this.$store.state.saleCategory.saleCategoryQuery = val;

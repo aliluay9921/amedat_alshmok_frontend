@@ -134,12 +134,14 @@
                   prepend-icon="mdi-calendar"
                   readonly
                   v-bind="attrs"
+                  :attrs-name="months_picker"
                   v-on="on"
                 ></v-text-field>
               </template>
               <v-date-picker
                 v-model="selected_object.date"
                 @input="menu = false"
+                :locale="currentLocale"
               ></v-date-picker>
             </v-menu>
           </v-col>
@@ -247,6 +249,7 @@ export default {
         " اليوسفية",
         " الرشيد",
       ],
+      months_picker: ["asd", "asda"],
       ecment_degree: [
         "C-15",
         "C-20",
@@ -273,9 +276,15 @@ export default {
       price: "",
       actual_quantity: "",
       notes: "",
+      currentLocale: "ar",
     };
   },
   computed: {
+    // currentLocale() {
+    //   console.log(moment.locale("ar"));
+
+    //   return moment.locale("ar");
+    // },
     selected_object() {
       return this.$store.state.saleCategory.selected_object;
     },
@@ -313,6 +322,7 @@ export default {
     },
     addData(data) {
       this.$store.dispatch("saleCategory/addSaleCategorie", data);
+      this.$store.dispatch("saleCategory/getSaleCategorie", data);
     },
     editData(data) {
       this.$store.dispatch("saleCategory/editSaleCategory", data);

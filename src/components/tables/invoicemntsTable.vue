@@ -91,13 +91,16 @@
                             <span style="padding-left: 75px"
                               ><b
                                 >التأريخ :
-                                {{ date }}
+                                {{ created_at | moment("DD.MM.YYYY") }}
                               </b></span
                             >
 
-                            <span style="padding-left: 55px">
-                              <b>الوقت : {{ time }} </b>
-                            </span>
+                            <!-- <span style="padding-left: 55px">
+                              <b
+                                >الوقت :
+                                {{ created_at | moment("h:mm:ss A") }}
+                              </b>
+                            </span> -->
                           </p>
                         </div>
                       </v-col>
@@ -326,6 +329,7 @@ export default {
       name_customer: "",
       invoicement_sequence: "",
       invoice_no: "",
+      created_at: "",
       dialog: false,
       item: {},
       printObj: {
@@ -442,6 +446,7 @@ export default {
       this.name_customer = item.process.name_customer;
       this.name_representative = item.process.name_representative;
       this.employee = item.employee.full_name;
+      this.created_at = item.created_at;
       // this.$store.dispatch("saleCategory/sendingToProcessing", item);
     },
     queryChange(val) {
