@@ -158,13 +158,10 @@
                               style="text-align: center"
                               v-model="quantity_car"
                             />
+                            <label for="">
+                              <b>متر مكعب</b>
+                            </label>
                           </div>
-                          <label
-                            for=""
-                            style="margin-top: 10px; margin-right: 15px"
-                          >
-                            <b>M3</b>
-                          </label>
                         </div>
                         <div class="details">
                           <div class="title">
@@ -257,6 +254,9 @@
     >
       <template v-slot:item="{ item }">
         <tr>
+          <td class="text-start">{{ item.process.place }}</td>
+          <td class="text-start">{{ item.process.date }}</td>
+          <td class="text-start">{{ item.process.name_representative }}</td>
           <td class="text-start">{{ item.driver_name }}</td>
           <td class="text-start">{{ item.car_number }}</td>
           <td class="text-start">{{ item.car_sequence }}</td>
@@ -338,6 +338,24 @@ export default {
         extraHead: '<meta http-equiv="Content-Language"content="en-ar"/>',
       },
       headers: [
+        {
+          text: "الموقع",
+          value: "place",
+          align: "start",
+          class: "secondary white--text title ",
+        },
+        {
+          text: "التأريخ",
+          value: "date",
+          align: "start",
+          class: "secondary white--text title ",
+        },
+        {
+          text: "اسم المندوب",
+          value: "name_representative",
+          align: "start",
+          class: "secondary white--text title ",
+        },
         {
           text: "اسم السائق",
           value: "driver_name",
@@ -520,7 +538,7 @@ export default {
   font-weight: bold;
   border-radius: 5px;
   padding: 5px;
-  min-width: 225px;
+  min-width: 300px !important;
 }
 .details .data :focus {
   outline: none;

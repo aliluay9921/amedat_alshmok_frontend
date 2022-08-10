@@ -162,13 +162,10 @@
                               style="text-align: center"
                               v-model="quantity_car"
                             />
+                            <label for="">
+                              <b>متر مكعب</b>
+                            </label>
                           </div>
-                          <label
-                            for=""
-                            style="margin-top: 10px; margin-right: 15px"
-                          >
-                            <b>M3</b>
-                          </label>
                         </div>
                         <div class="details">
                           <div class="title">
@@ -237,6 +234,14 @@
                   <v-btn
                     secondary
                     color="secondary"
+                    :disabled="
+                      this.quantity_car == '' ||
+                      this.car_sequence == '' ||
+                      this.quantity_car == null ||
+                      this.car_sequence == null ||
+                      this.driver_name == '' ||
+                      this.driver_name == null
+                    "
                     @click="add_process"
                     v-print="'#printMe'"
                   >
@@ -284,6 +289,17 @@
           </td>
           <td class="text-start" v-else-if="item.status == 3">
             <v-chip color="primary">نفذت</v-chip>
+          </td>
+
+          <td class="text-start" v-if="item.proces_type == 1">
+            <v-chip color="primary">معمل العامرية</v-chip>
+          </td>
+          <td class="text-start" v-else-if="item.proces_type == 2">
+            <v-chip dark color="primary"> معمل الفروسية </v-chip>
+          </td>
+
+          <td class="text-start" v-else-if="item.proces_type == 3">
+            <v-chip color="primary">مشترك</v-chip>
           </td>
           <td class="text-start">{{ item.place }}</td>
           <td class="text-start">{{ item.name_customer }}</td>
@@ -382,6 +398,12 @@ export default {
           class: "secondary white--text title ",
         },
         {
+          text: "نوع التجهيز",
+          value: "proces_type",
+          align: "start",
+          class: "secondary white--text title ",
+        },
+        {
           text: "الموقع ",
           value: "place",
           align: "start",
@@ -475,21 +497,91 @@ export default {
         },
       ],
       drivers: [
-        "علي لؤي",
+        "قصي أحمد",
+        "محمود علاء",
+        "زهير عيفان",
         "محمد علي",
-        "كرار محسن",
-        "حسن حسين",
-        "جاسم اسعد",
-        "مرتضى وليد",
-        "ايمن سعد",
+        "احمد سامي",
+        "محمد قاسم",
+        "حقي عبد الحسن",
+        "اورنس علي",
+        "سلام ماضي",
+        "طيب كامل",
+        "خليل يوسف",
+        "رواد حامد",
+        "وليد ياسين",
+        "هشام ماجد",
+        "عمار ياسر",
+        "رائد محمد",
+        "عمار رافع",
+        "حسن ابراهيم",
+        "محمد شهاب",
+        "حسين هادي",
+        "محمد اكرم",
+        "ابراهيم محمد",
+        "رياض احمد",
+        "وائل محمد",
+        "عبدالله سرحان",
+        "مصطفى طارق",
+        "حيدر محمد",
       ],
-      cars_sequence: ["1", "2", "3", "4", "5"],
+      cars_sequence: [
+        "خ22",
+        "خ24",
+        "خ25",
+        "خ26",
+        "خ27",
+        "خ28",
+        "خ29",
+        "خ30",
+        "خ31",
+        "خ32",
+        "خ33",
+        "خ34",
+        "خ35",
+        "خ36",
+        "خ37",
+        "خ38",
+        "خ39",
+        "خ40",
+        "خ41",
+        "خ42",
+        "خ43",
+        "خ44",
+        "خ45",
+        "خ46",
+        "خ47",
+        "خ48",
+        "خ49",
+      ],
       cars_info: [
-        { sequence: "1", number: "1111" },
-        { sequence: "2", number: "2222" },
-        { sequence: "3", number: "3333" },
-        { sequence: "4", number: "4444" },
-        { sequence: "5", number: "5555" },
+        { sequence: "خ22", number: "8073" },
+        { sequence: "خ24", number: "14310" },
+        { sequence: "خ25", number: "14731" },
+        { sequence: "خ26", number: "15146" },
+        { sequence: "خ27", number: "15253" },
+        { sequence: "خ28", number: "9269" },
+        { sequence: "خ29", number: "10195" },
+        { sequence: "خ30", number: "9766" },
+        { sequence: "خ31", number: "6460" },
+        { sequence: "خ32", number: "5207" },
+        { sequence: "خ33", number: "6366" },
+        { sequence: "خ34", number: "14277" },
+        { sequence: "خ35", number: "6385" },
+        { sequence: "خ36", number: "10335" },
+        { sequence: "خ37", number: "10263" },
+        { sequence: "خ38", number: "7854" },
+        { sequence: "خ39", number: "6409" },
+        { sequence: "خ40", number: "10442" },
+        { sequence: "خ41", number: "6330" },
+        { sequence: "خ42", number: "4509" },
+        { sequence: "خ43", number: "8817" },
+        { sequence: "خ44", number: "6313" },
+        { sequence: "خ45", number: "6291" },
+        { sequence: "خ46", number: "6553" },
+        { sequence: "خ47", number: "9943" },
+        { sequence: "خ48", number: "6495" },
+        { sequence: "خ49", number: "10154" },
       ],
       car_sequence: "",
       car_number: "",
@@ -690,7 +782,7 @@ export default {
   font-weight: bold;
   border-radius: 5px;
   padding: 5px;
-  min-width: 225px;
+  min-width: 300px !important;
 }
 .details .data :focus {
   outline: none;

@@ -101,9 +101,9 @@ export default {
           } else {
             if (user_type == 0) {
               this.$router.replace("/");
-            } else if (user_type == 1) {
+            } else if (user_type == 1 || user_type == 2) {
               this.$router.replace("/processing");
-            } else if (user_type == 2) {
+            } else if (user_type == 3) {
               this.$router.replace("/doneSaleCategory");
             }
           }

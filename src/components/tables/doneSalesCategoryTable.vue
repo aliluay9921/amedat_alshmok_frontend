@@ -1,7 +1,7 @@
 <template>
   <v-card class="elevation-1">
     <!-- dilog to done and print invoice -->
-    <template v-if="user_type != 2 && user_type == 1">
+    <template v-if="user_type != 3">
       <v-container>
         <v-row justify="center">
           <v-col cols="12" sm="3">
@@ -51,6 +51,17 @@
           <td class="text-start" v-else-if="item.status == 3">
             <v-chip color="primary">نفذت</v-chip>
           </td>
+
+          <td class="text-start" v-if="item.proces_type == 1">
+            <v-chip color="primary">معمل العامرية</v-chip>
+          </td>
+          <td class="text-start" v-else-if="item.proces_type == 2">
+            <v-chip dark color="primary"> معمل الفروسية </v-chip>
+          </td>
+
+          <td class="text-start" v-else-if="item.proces_type == 3">
+            <v-chip color="primary">مشترك</v-chip>
+          </td>
           <td class="text-start">{{ item.place }}</td>
           <td class="text-start">{{ item.name_customer }}</td>
           <td class="text-start">{{ item.degree }}/{{ item.type }}</td>
@@ -71,21 +82,55 @@
           <td class="text-start" v-else>{{ item.notes }}</td>
         </tr>
       </template>
+
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>جدول المبيعات</v-toolbar-title>
+          <v-toolbar-title>جدول المبيعات المكتملة</v-toolbar-title>
 
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-          <v-text-field
-            v-model="saleCategoryQuery"
-            @input="queryChange"
-            append-icon="mdi-magnify"
-            label="بحث"
-            single-line
-            hide-details
-            class="mr-5"
-          ></v-text-field>
+          <v-row style="margin-top: 15px">
+            <v-col>
+              <v-text-field
+                v-model="saleCategoryQuery"
+                @input="queryChange"
+                append-icon="mdi-magnify"
+                label="بحث"
+                single-line
+                hide-details
+                class="mr-5"
+              ></v-text-field>
+              <v-spacer></v-spacer>
+            </v-col>
+            <v-col v-if="user_type == 3">
+              <v-menu
+                v-model="menu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+                style="margin-top: 60px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="date"
+                    label="التأريخ"
+                    append-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="date"
+                  @input="menu = false"
+                  :locale="currentLocale"
+                  @change="filter"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
         </v-toolbar>
       </template>
     </v-data-table>
@@ -118,6 +163,12 @@ export default {
         {
           text: "الحالة",
           value: "status",
+          align: "start",
+          class: "secondary white--text title ",
+        },
+        {
+          text: "نوع التجهيز",
+          value: "proces_type",
           align: "start",
           class: "secondary white--text title ",
         },
@@ -211,6 +262,9 @@ export default {
 
       pagination: {},
       items: [5, 10, 25, 50, 100],
+      menu: null,
+      currentLocale: "ar",
+      date: "",
     };
   },
   computed: {
@@ -250,6 +304,12 @@ export default {
     queryChange(val) {
       this.searchDebounce();
     },
+    filter() {
+      this.$store.state.saleCategory.filter_date = this.date;
+      console.log(this.date);
+
+      this.$store.dispatch("saleCategory/getSalesCategories");
+    },
     getSalesCategories() {
       let pagination = this.pagination;
       let par = {
@@ -259,6 +319,12 @@ export default {
       this.sales_categories_params = par;
       var filter = { name: "status", value: 3 };
       Object.assign(this.$store.state.saleCategory.filter, filter);
+
+      const current = new Date();
+      const moment = require("moment");
+      this.date = moment(current).format("YYYY-MM-DD");
+      this.$store.state.saleCategory.filter_date = this.date;
+      console.log(this.date);
       this.$store.dispatch("saleCategory/getSalesCategories");
     },
     searchDebounce() {

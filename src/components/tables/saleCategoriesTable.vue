@@ -76,6 +76,9 @@
           <td class="text-start" v-else-if="item.status == 1">
             <v-chip dark color="green">تم ألترحيل الى المعمل </v-chip>
           </td>
+          <td class="text-start" v-else-if="item.status == 2">
+            <v-chip dark color="primary">بدأ التنفيذ بها</v-chip>
+          </td>
           <td class="text-start" v-else>
             <v-chip dark color="new">تم تنفيذها </v-chip>
           </td>
@@ -119,6 +122,9 @@
           </td>
           <td class="text-start" v-else-if="item.status == 1">
             <v-btn dark color="green">تم الترحيل الى المعمل </v-btn>
+          </td>
+          <td class="text-start" v-else-if="item.status == 2">
+            <v-btn dark color="primary">بدأ التنفيذ بها </v-btn>
           </td>
           <td class="text-start" v-else>
             <v-btn dark color="new">تم تنفيذها </v-btn>
@@ -199,7 +205,7 @@
                     @click="select_procsess((type = 1))"
                     outlined
                     rounded
-                    >معمل الدورة</v-btn
+                    >معمل العامرية</v-btn
                   >
                 </v-col>
                 <v-col cols="12" sm="4">
@@ -210,7 +216,7 @@
                     outlined
                     color="white"
                     rounded
-                    >معمل العامرية</v-btn
+                    >معمل الفروسية</v-btn
                   >
                 </v-col>
                 <v-col cols="12" sm="4">
@@ -362,7 +368,7 @@ export default {
       ],
       menu: null,
       currentLocale: "ar",
-      date: "2022-08-09",
+      date: "",
       type: "",
     };
   },

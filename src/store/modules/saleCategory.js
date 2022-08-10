@@ -10,6 +10,7 @@ const ExamModule = {
         selected_object: {},
         isEdit: false,
         filter: {},
+        filter_date: "",
         saleCategoryQuery: "",
         pageCount: 1,
         params: {
@@ -90,27 +91,52 @@ const ExamModule = {
             if (state.sela_category_state != "done") return -1;
             state.table_loading = true;
             let data = state.params;
-
+            console.log(rootState.user_type)
+            console.log(localStorage.getItem("user_type"));
             let skip = (data.page - 1) * data.itemsPerPage;
             let limit = data.itemsPerPage;
             let query = "";
             var filterSaleCategory = "";
+            var getProcesByUserType = [];
+            var filter_date = "";
             if (
                 state.saleCategoryQuery != undefined &&
                 state.saleCategoryQuery != null &&
                 state.saleCategoryQuery.length > 0
             ) query = `&query=${state.saleCategoryQuery}`;
-
             if (Object.keys(state.filter).length != 0)
                 filterSaleCategory = "&filter=" + JSON.stringify(state.filter);
             console.log(filterSaleCategory);
+
+            if (rootState.user_type != 0) {
+                // getProcesByUserType.push(rootState.user_type);
+                // getProcesByUserType.push("3");
+                if (rootState.user_type == 3) {
+                    getProcesByUserType = ["1", "2", "3"];
+                    filter_date = "&filter_date=" + state.filter_date
+                    console.log(filter_date)
+                } else {
+                    getProcesByUserType.push(rootState.user_type);
+                    getProcesByUserType.push("3");
+                }
+
+
+            } else {
+                getProcesByUserType = ["0", "1", "2", "3"];
+            }
+            console.log(typeof (JSON.stringify(getProcesByUserType)));
+
+            var proces_type = '& proces_type[] =' + JSON.stringify(getProcesByUserType);
+            console.log(proces_type);
+
             return new Promise((resolve, reject) => {
+                console.log(filter_date)
 
                 axios({
                     url: `${rootState.server}` + "/api/get_sale" + "?skip=" + skip +
                         "&limit=" +
                         limit +
-                        query + filterSaleCategory,
+                        query + filterSaleCategory + proces_type + filter_date,
 
                     method: "GET",
                 }).then(resp => {
