@@ -5,6 +5,7 @@ import axios from "axios";
 
 import saleCategory from '../store/modules/saleCategory'
 import invoicement from '../store/modules/invoicement'
+import representive from '../store/modules/representive'
 
 
 Vue.use(Vuex);
@@ -107,6 +108,6 @@ export default new Vuex.Store({
 
   },
   modules: {
-    saleCategory, invoicement
+    saleCategory, invoicement, representive
   },
 });

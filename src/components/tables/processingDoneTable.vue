@@ -696,7 +696,7 @@ export default {
       this.place = item.place;
       this.date = item.date;
       this.time = item.time;
-      this.type = item.degree + "/" + item.type;
+      this.type = item.degree;
       this.name_customer = item.name_customer;
       this.employee = item.employee.full_name;
 

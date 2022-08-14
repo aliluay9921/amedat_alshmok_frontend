@@ -116,6 +116,8 @@ export default {
           }, 3000);
           // console.log(err);
         });
+      this.user_name = "";
+      this.password = "";
     },
 
     changeRTL() {

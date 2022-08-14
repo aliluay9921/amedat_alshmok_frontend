@@ -157,6 +157,7 @@
                               type="text"
                               style="text-align: center"
                               v-model="quantity_car"
+                              readonly
                             />
                             <label for="">
                               <b>متر مكعب</b>
@@ -257,6 +258,7 @@
           <td class="text-start">{{ item.process.place }}</td>
           <td class="text-start">{{ item.process.date }}</td>
           <td class="text-start">{{ item.process.name_representative }}</td>
+          <td class="text-start">{{ item.process.name_customer }}</td>
           <td class="text-start">{{ item.driver_name }}</td>
           <td class="text-start">{{ item.car_number }}</td>
           <td class="text-start">{{ item.car_sequence }}</td>
@@ -357,6 +359,12 @@ export default {
           class: "secondary white--text title ",
         },
         {
+          text: "اسم الزبون",
+          value: "name_customer",
+          align: "start",
+          class: "secondary white--text title ",
+        },
+        {
           text: "اسم السائق",
           value: "driver_name",
           align: "start",
@@ -400,7 +408,7 @@ export default {
         },
 
         {
-          text: "ترحيل",
+          text: "العمليات",
           align: "start",
           class: "secondary white--text title",
         },
@@ -457,7 +465,7 @@ export default {
       this.invoice_no = item.invoice_no;
       this.car_sequence = item.car_sequence;
       this.sequence = item.sequence;
-      this.type = item.process.type;
+      this.type = item.process.degree;
       this.time = item.process.time;
       this.place = item.process.place;
       this.date = item.process.date;

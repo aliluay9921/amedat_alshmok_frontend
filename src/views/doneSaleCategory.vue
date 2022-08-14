@@ -6,21 +6,30 @@
 
     <v-card class="mt-5">
       <v-toolbar dark color="secondary">
-        <v-toolbar-title align-center> المعمل </v-toolbar-title>
+        <v-toolbar-title align-center v-if="user_type == 3">
+          الحسابات
+        </v-toolbar-title>
+        <v-toolbar-title align-center v-else>
+          المبيعات المكتملة
+        </v-toolbar-title>
       </v-toolbar>
       <doneSalesCategoryTable></doneSalesCategoryTable>
     </v-card>
   </v-container>
 </template>
-
 <script>
 // @ is an alias to /src
 import doneSalesCategoryTable from "../components/tables/doneSalesCategoryTable.vue";
-
 export default {
   name: "Home",
   components: {
     doneSalesCategoryTable,
+  },
+
+  computed: {
+    user_type() {
+      return localStorage.user_type;
+    },
   },
 };
 </script>

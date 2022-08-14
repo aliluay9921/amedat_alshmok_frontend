@@ -7,6 +7,7 @@ import processing from "../views/processing.vue";
 import invoicment from "../views/invoicment.vue";
 import processDone from "../views/processingDone.vue";
 import doneSaleCategory from "../views/doneSaleCategory.vue";
+import representive from "../views/representive.vue";
 
 Vue.use(VueRouter);
 
@@ -18,43 +19,45 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
-  },
-  {
+  }, {
     path: "/login",
     name: "login",
     component: login,
     meta: {
       requireNotLogin: true,
     }
-  },
-  {
+  }, {
     path: "/processing",
     name: "processing",
     component: processing,
     meta: {
       requiresAuth: true,
     },
-  },
-  {
+  }, {
     path: "/invoicment",
     name: "invoicment",
     component: invoicment,
     meta: {
       requiresAuth: true,
     },
-  },
-  {
+  }, {
     path: "/processDone",
     name: "processDone",
     component: processDone,
     meta: {
       requiresAuth: true,
     },
-  },
-  {
+  }, {
     path: "/doneSaleCategory",
     name: "doneSaleCategory",
     component: doneSaleCategory,
+    meta: {
+      requiresAuth: true,
+    },
+  }, {
+    path: "/representive",
+    name: "representive",
+    component: representive,
     meta: {
       requiresAuth: true,
     },

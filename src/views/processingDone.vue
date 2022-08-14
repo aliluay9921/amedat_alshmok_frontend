@@ -6,7 +6,7 @@
 
     <v-card class="mt-5">
       <v-toolbar dark color="secondary">
-        <v-toolbar-title align-center> المعمل </v-toolbar-title>
+        <v-toolbar-title align-center> مبيعات قيد التنفيذ </v-toolbar-title>
       </v-toolbar>
       <processingDoneTable></processingDoneTable>
     </v-card>
