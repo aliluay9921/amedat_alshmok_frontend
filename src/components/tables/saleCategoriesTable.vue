@@ -89,7 +89,7 @@
           <td class="text-start">{{ item.man_buliding }}</td>
           <td class="text-start">{{ item.workers }}</td>
           <td class="text-start">{{ item.bump }}</td>
-          <td class="text-start">{{ item.name_representative }}</td>
+          <td class="text-start">{{ item.representativ.full_name }}</td>
           <td class="text-start">{{ item.phone_number }}</td>
           <td class="text-start">{{ item.price }}</td>
           <td class="text-center">{{ item.actual_quantity }}</td>

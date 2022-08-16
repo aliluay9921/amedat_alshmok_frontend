@@ -1,15 +1,82 @@
 <template>
   <v-card class="elevation-1">
+    <!-- show password -->
+    <template>
+      <v-row justify="center">
+        <v-dialog v-model="dialog1" persistent max-width="390">
+          <v-card>
+            <v-card-title class="text-h5 secondary white--text">
+              عرض كلمة المرور
+            </v-card-title>
+            <v-card-text class="mt-5 text-h5 dark--text"
+              >كلمة المرور الخاصة بهذا المستخدم
+              <v-spacer> </v-spacer>
+              <h3 style="color: blue">
+                <b>{{ password }}</b>
+              </h3>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="dialog1 = false"
+              >
+                غلق
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
+
+    <!-- dilog to delete representive -->
+
+    <template>
+      <v-row justify="center">
+        <v-dialog v-model="dialog" persistent max-width="390">
+          <v-card>
+            <v-card-title class="text-h5 secondary white--text">
+              حذف المندوب
+            </v-card-title>
+            <v-card-text class="mt-5 text-h5 dark--text"
+              ><b> هل أنت متأكد من عملية الحذف </b></v-card-text
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="dialog = false"
+              >
+                غلق
+              </v-btn>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="deleteRepresentive()"
+              >
+                تأكيد الحذف
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
+
     <!-- dilog to done and print invoice -->
     <template>
       <v-container>
-        <v-row justify="center">
+        <v-row justify="center" class="mt-5">
           <v-col cols="12" sm="3">
-            <v-btn dark color="primary" to="/invoicment">الفواتير</v-btn>
+            <v-btn dark color="primary" to="/representive">المندوبين</v-btn>
           </v-col>
           <v-col cols="12" sm="3">
-            <v-btn dark color="primary" to="/processing"
-              >المبيعات قيد الانتضار</v-btn
+            <v-btn dark color="primary" to="/doneSaleCategory"
+              >المبيعات المكتملة</v-btn
             >
           </v-col>
         </v-row>
@@ -27,12 +94,21 @@
       loading-text="جاري التحميل يرجى الأنتظار"
     >
       <template v-slot:item="{ item }">
-        <tr>
+        <tr @dblclick="selectedRaw(item)">
           <td class="text-start">{{ item.full_name }}</td>
           <td class="text-start">{{ item.user_name }}</td>
 
           <td class="text-start">
-            <v-btn dark color="green" @click="getItem(item)">طباعة</v-btn>
+            <v-btn dark color="error" @click="getItem(item, (type = 1))"
+              >حذف</v-btn
+            >
+            <v-btn
+              dark
+              color="primary"
+              class="mr-2 ml-2"
+              @click="getItem(item, (type = 2))"
+              >عرض كلمة المرور</v-btn
+            >
           </td>
         </tr>
       </template>
@@ -80,7 +156,8 @@ export default {
     return {
       search: "",
       rules: [(value) => !!value || "هذا الحقل مطلوب."],
-
+      dialog: false,
+      dialog1: false,
       item: {},
 
       headers: [
@@ -118,7 +195,7 @@ export default {
       return this.$store.state.representive.pageCount;
     },
     totalItems: function () {
-      return this.$store.state.representive.sales_categories.length;
+      return this.$store.state.representive.representives.length;
     },
     representiveQuery: {
       set(val) {
@@ -136,13 +213,39 @@ export default {
         return this.$store.state.representive.params;
       },
     },
+    password() {
+      return this.$store.state.representive.infoUser;
+    },
   },
   methods: {
+    selectedRaw(item) {
+      console.log(item);
+      this.$store.state.representive.selected_object = {};
+      Object.assign(this.$store.state.representive.selected_object, item);
+      this.$store.state.representive.isEdit = true;
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+    },
     queryChange(val) {
       this.searchDebounce();
     },
-    getItem(item) {
+    getItem(item, type) {
       console.log(item);
+      if (type == 1) {
+        this.dialog = true;
+        this.item = item;
+      } else if (type == 2) {
+        this.$store.dispatch("representive/getUserInfo", item.id);
+        this.dialog1 = true;
+      }
+    },
+    deleteRepresentive() {
+      this.$store.dispatch("representive/deleteRepresentive", this.item);
+      this.dialog = false;
+      this.item = {};
     },
     getRepresentives() {
       let pagination = this.pagination;
@@ -150,7 +253,7 @@ export default {
         ...pagination,
       };
       // // console.log(this.query);
-      this.invoicemnt_params = par;
+      this.representive_params = par;
       this.$store.dispatch("representive/getRepresentives");
     },
 
@@ -173,7 +276,7 @@ export default {
     pagination: {
       handler() {
         this.getRepresentives();
-        this.invoicemnt_params.page = 1;
+        this.representive_params.page = 1;
       },
       deep: true,
     },

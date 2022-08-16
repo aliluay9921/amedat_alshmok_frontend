@@ -308,7 +308,7 @@
           <td class="text-start">{{ item.man_buliding }}</td>
           <td class="text-start">{{ item.workers }}</td>
           <td class="text-start">{{ item.bump }}</td>
-          <td class="text-start">{{ item.name_representative }}</td>
+          <td class="text-start">{{ item.representativ.full_name }}</td>
           <td class="text-start">{{ item.phone_number }}</td>
           <td class="text-start">{{ item.price }}</td>
           <td class="text-start">{{ item.actual_quantity }}</td>
@@ -691,7 +691,7 @@ export default {
       this.car_sequence = "";
       this.dialog = true;
       this.sale_category_id = item.id;
-      this.name_representative = item.name_representative;
+      this.name_representative = item.representativ.full_name;
       this.phone_number = item.phone_number;
       this.place = item.place;
       this.date = item.date;

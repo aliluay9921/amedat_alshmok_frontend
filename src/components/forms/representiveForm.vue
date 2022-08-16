@@ -24,7 +24,7 @@
               clearable
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4">
+          <v-col cols="12" sm="4" v-if="!isEdit">
             <v-text-field
               v-model="selected_object.password"
               :rules="[rules.required]"
@@ -89,11 +89,13 @@ export default {
         let data = {};
         data["full_name"] = this.selected_object.full_name;
         data["user_name"] = this.selected_object.user_name;
-        data["password"] = this.selected_object.password;
 
         if (this.isEdit) {
+          data["id"] = this.selected_object.id;
           this.editData(data);
         } else {
+          data["password"] = this.selected_object.password;
+
           this.addData(data);
         }
       }
@@ -103,7 +105,7 @@ export default {
       this.$store.dispatch("representive/getRepresentives", data);
     },
     editData(data) {
-      this.$store.dispatch("representive/editSaleCategory", data);
+      this.$store.dispatch("representive/editRepresentives", data);
     },
     reset() {
       this.$refs.form.reset();

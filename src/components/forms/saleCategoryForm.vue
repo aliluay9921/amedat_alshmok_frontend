@@ -56,14 +56,39 @@
         </v-row>
         <v-row>
           <v-col cols="12" sm="3">
-            <v-text-field
+            <!-- <v-text-field
               v-model="selected_object.name_representative"
               placeholder="اسم المندوب"
               label="اسم المندوب"
               hide-details="auto"
               :rules="rules"
               clearable
-            ></v-text-field>
+            ></v-text-field> -->
+            <v-autocomplete
+              clearable
+              :items="representives"
+              ref="representiveDropdown"
+              v-model="selected_object.representative_id"
+              item-text="full_name"
+              item-value="id"
+              label="اختر مندوب"
+              :loading="loading"
+              :menu-props="menu_props"
+              :search-input.sync="representiveQuery"
+              :value="representiveQuery"
+            >
+              <template v-slot:append-item>
+                <div
+                  v-if="
+                    !(
+                      $store.state.representive.representives_state ==
+                      'finished'
+                    )
+                  "
+                  v-intersect="representiveInteract"
+                  class="text-xs-center"
+                ></div> </template
+            ></v-autocomplete>
           </v-col>
           <v-col cols="12" sm="3">
             <v-text-field
@@ -277,6 +302,17 @@ export default {
       actual_quantity: "",
       notes: "",
       currentLocale: "ar",
+      representive_id: "",
+      menu_props: {
+        closeOnClick: false,
+        closeOnContentClick: false,
+        disableKeys: true,
+        openOnClick: false,
+        maxHeight: 150,
+        offsetY: true,
+        offsetOverflow: true,
+        transition: false,
+      },
     };
   },
   computed: {
@@ -285,11 +321,25 @@ export default {
 
     //   return moment.locale("ar");
     // },
+    representives() {
+      return this.$store.state.representive.representives;
+    },
     selected_object() {
       return this.$store.state.saleCategory.selected_object;
     },
     isEdit() {
       return this.$store.state.saleCategory.isEdit;
+    },
+    loading() {
+      return this.$store.state.representive.table_loading;
+    },
+    representiveQuery: {
+      get() {
+        return this.$store.state.representive.representiveQuery;
+      },
+      set(value) {
+        this.$store.state.representive.representiveQuery = value;
+      },
     },
   },
   methods: {
@@ -306,7 +356,8 @@ export default {
         data["bump"] = this.selected_object.bump;
         data["date"] = this.selected_object.date;
         data["time"] = this.selected_object.time;
-        data["name_representative"] = this.selected_object.name_representative;
+        // data["name_representative"] = this.selected_object.name_representative;
+        data["representative_id"] = this.selected_object.representative_id;
         data["phone_number"] = this.selected_object.phone_number;
         data["price"] = this.selected_object.price;
         data["actual_quantity"] = this.selected_object.actual_quantity;
@@ -320,6 +371,50 @@ export default {
         }
       }
     },
+    updateRepresentiveSearch(value) {
+      clearTimeout(this._timerId);
+      // delay new call 1000ms
+      this._timerId = setTimeout(() => {
+        // console.log(this.userQuery);
+
+        if (this.representiveQuery == null) {
+          return;
+        }
+        // this.$store.dispatch("UserModule/resetFields");
+        this.$store.state.representive.params.page = 1;
+        // console.log(this.$store.state.UserModule.params);
+
+        if (
+          this.representiveQuery.length == 0 ||
+          (this.representiveQuery.length == 1 && this.representiveQuery == " ")
+        )
+          this.representiveQuery = value.replace(/\s/g, "");
+        // هاي تلغي ال space
+        else {
+          this.$store.state.representive.representiveQuery = value;
+          // console.log(value);
+          // console.log(this.$store.state.UserModule.userQuery);
+        }
+        // this.$store.state.UserModule.params.query = this.userQuery;
+        // this.$store.dispatch("UserModule/resetFields");
+
+        this.getRepresentives();
+      }, 1000);
+    },
+    getRepresentives() {
+      if (this.$store.state.representive.representives_state == "finished")
+        return;
+      this.$store.dispatch("representive/getRepresentives");
+    },
+    representiveInteract(entries, observer, isIntersecting) {
+      if (isIntersecting) {
+        setTimeout(() => {
+          this.getRepresentives(); // onscroll
+          console.log("on scroll");
+          this.$refs.representiveDropdown.onScroll();
+        }, 500);
+      }
+    },
     addData(data) {
       this.$store.dispatch("saleCategory/addSaleCategorie", data);
       this.$store.dispatch("saleCategory/getSaleCategorie", data);
@@ -330,6 +425,14 @@ export default {
     reset() {
       this.$refs.form.reset();
       this.$store.state.saleCategory.isEdit = false;
+    },
+  },
+  watch: {
+    representiveQuery: function () {
+      this.updateRepresentiveSearch(this.representiveQuery);
+    },
+    beforeDestroy() {
+      this.representiveQuery = "";
     },
   },
 };

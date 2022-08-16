@@ -157,7 +157,20 @@
         </v-row>
       </v-container>
     </template>
-
+    <template v-if="user_type == 3">
+      <v-container>
+        <v-row justify="center">
+          <v-col cols="12" sm="3">
+            <v-btn dark color="primary" to="/representive">المندوبين</v-btn>
+          </v-col>
+          <v-col cols="12" sm="3">
+            <v-btn dark color="primary" to="/doneSaleCategory"
+              >المبيعات المكتملة</v-btn
+            >
+          </v-col>
+        </v-row>
+      </v-container>
+    </template>
     <template v-if="user_type != 3">
       <v-container>
         <v-row justify="center">
@@ -226,7 +239,7 @@
           <td class="text-start">{{ item.man_buliding }}</td>
           <td class="text-start">{{ item.workers }}</td>
           <td class="text-start">{{ item.bump }}</td>
-          <td class="text-start">{{ item.name_representative }}</td>
+          <td class="text-start">{{ item.representativ.full_name }}</td>
           <td class="text-start">{{ item.phone_number }}</td>
           <td class="text-start">{{ item.price }}</td>
           <td class="text-start">{{ item.actual_quantity }}</td>
@@ -529,7 +542,7 @@ export default {
       this.place = item.place;
       this.date = item.date;
       this.name_customer = item.name_customer;
-      this.name_representative = item.name_representative;
+      this.name_representative = item.representativ.full_name;
       this.created_at = item.created_at;
       this.actual_quantity = item.actual_quantity;
       // this.$store.dispatch("saleCategory/sendingToProcessing", item);

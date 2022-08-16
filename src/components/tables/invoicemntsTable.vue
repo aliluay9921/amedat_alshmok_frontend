@@ -257,7 +257,8 @@
         <tr>
           <td class="text-start">{{ item.process.place }}</td>
           <td class="text-start">{{ item.process.date }}</td>
-          <td class="text-start">{{ item.process.name_representative }}</td>
+          <td class="text-start">{{ item.process.representativ.full_name }}</td>
+
           <td class="text-start">{{ item.process.name_customer }}</td>
           <td class="text-start">{{ item.driver_name }}</td>
           <td class="text-start">{{ item.car_number }}</td>
@@ -470,7 +471,7 @@ export default {
       this.place = item.process.place;
       this.date = item.process.date;
       this.name_customer = item.process.name_customer;
-      this.name_representative = item.process.name_representative;
+      this.name_representative = item.process.representativ.full_name;
       this.employee = item.employee.full_name;
       this.created_at = item.created_at;
       // this.$store.dispatch("saleCategory/sendingToProcessing", item);
