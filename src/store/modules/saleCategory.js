@@ -38,11 +38,9 @@ const ExamModule = {
             state.sela_category_state = "error";
         },
         add_sale_category_success(state, sale_category) {
-            console.log(sale_category);
             state.sales_categories.unshift(sale_category);
             state.sela_category_state = "done";
             state.table_loading = false;
-            console.log(sales_categories);
 
         },
         sale_category_edit_success(state, sale_category) {
@@ -108,7 +106,7 @@ const ExamModule = {
                 filterSaleCategory = "&filter=" + JSON.stringify(state.filter);
             console.log(filterSaleCategory);
 
-            if (rootState.user_type != 0) {
+            if (rootState.user_type != 0 && rootState.user_type != 4) {
                 // getProcesByUserType.push(rootState.user_type);
                 // getProcesByUserType.push("3");
                 if (rootState.user_type == 3) {
@@ -128,6 +126,8 @@ const ExamModule = {
 
             var proces_type = '& proces_type[] =' + JSON.stringify(getProcesByUserType);
             console.log(proces_type);
+
+
 
             return new Promise((resolve, reject) => {
                 console.log(filter_date)
@@ -149,6 +149,7 @@ const ExamModule = {
                 }).catch((err) => {
                     state.table_loading = false;
                     reject(err);
+                    console.log(err)
                     commit("sale_category_error");
                     dispatch(
                         "snackbarToggle",
@@ -186,6 +187,7 @@ const ExamModule = {
                 }).catch((err) => {
                     state.table_loading = false;
                     commit("sale_category_error");
+                    console.log(err);
                     dispatch(
                         "snackbarToggle",
                         { toggle: true, text: err.response.data.message },

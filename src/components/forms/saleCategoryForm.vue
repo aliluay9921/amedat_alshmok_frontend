@@ -55,7 +55,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" sm="3">
+          <v-col cols="12" sm="3" v-if="user_type == 0">
             <!-- <v-text-field
               v-model="selected_object.name_representative"
               placeholder="اسم المندوب"
@@ -178,8 +178,24 @@
               hide-details="auto"
               :rules="rules"
               clearable
-            ></v-text-field>
+            >
+            </v-text-field>
+            <v-radio-group
+              v-model="radios"
+              :rules="rules"
+              @change="addTime"
+              row
+            >
+              <v-radio label="صباحاً" value="صباحاً"></v-radio>
+              <v-radio label="مساءاً" value="مساءاً"></v-radio>
+            </v-radio-group>
           </v-col>
+          <!-- <v-col cols="12" sm="3">
+            <v-radio-group v-model="radios" mandatory :rules="rules" row>
+              <v-radio label="صباحاً" value="1"></v-radio>
+              <v-radio label="مساءاً" value="2"></v-radio>
+            </v-radio-group>
+          </v-col> -->
           <v-col cols="12" sm="3">
             <v-text-field
               v-model="selected_object.notes"
@@ -286,6 +302,7 @@ export default {
         "C-50",
       ],
       ecment_type: ["عادي", "مقاوم"],
+      radios: "",
       place: "",
       name_customer: "",
       type: "",
@@ -324,6 +341,9 @@ export default {
     representives() {
       return this.$store.state.representive.representives;
     },
+    user_type() {
+      return localStorage.getItem("user_type");
+    },
     selected_object() {
       return this.$store.state.saleCategory.selected_object;
     },
@@ -343,6 +363,10 @@ export default {
     },
   },
   methods: {
+    addTime() {
+      console.log(this.radios);
+      this.selected_object.time + "/" + this.radios;
+    },
     validateField() {
       if (this.$refs.form.validate()) {
         let data = {};
@@ -355,7 +379,7 @@ export default {
         data["workers"] = this.selected_object.workers;
         data["bump"] = this.selected_object.bump;
         data["date"] = this.selected_object.date;
-        data["time"] = this.selected_object.time;
+        data["time"] = this.radios + "-" + this.selected_object.time;
         // data["name_representative"] = this.selected_object.name_representative;
         data["representative_id"] = this.selected_object.representative_id;
         data["phone_number"] = this.selected_object.phone_number;
@@ -363,6 +387,7 @@ export default {
         data["actual_quantity"] = this.selected_object.actual_quantity;
         data["notes"] = this.selected_object.notes;
         // this.ecment_degree
+
         if (this.isEdit) {
           data["sale_category_id"] = this.selected_object.id;
           this.editData(data);
@@ -417,10 +442,11 @@ export default {
     },
     addData(data) {
       this.$store.dispatch("saleCategory/addSaleCategorie", data);
-      this.$store.dispatch("saleCategory/getSaleCategorie", data);
+      this.$store.dispatch("saleCategory/getSalesCategories", data);
     },
     editData(data) {
       this.$store.dispatch("saleCategory/editSaleCategory", data);
+      this.reset();
     },
     reset() {
       this.$refs.form.reset();

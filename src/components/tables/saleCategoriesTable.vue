@@ -37,7 +37,7 @@
               ></v-text-field>
               <v-spacer></v-spacer>
             </v-col>
-            <v-col>
+            <v-col v-if="user_type != 4">
               <v-menu
                 v-model="menu"
                 :close-on-content-click="false"
@@ -95,7 +95,7 @@
           <td class="text-center">{{ item.actual_quantity }}</td>
           <td class="text-start">{{ item.date }}</td>
 
-          <td class="text-start">{{ item.time }}</td>
+          <td class="text-start" dir="ltr">{{ item.time }}</td>
           <td class="text-start" v-if="item.notes == null">
             <v-chip dark color="new">لايوجد ملاحظات</v-chip>
           </td>
@@ -105,7 +105,7 @@
             style="display: flex; flex-diractions: row"
             v-if="item.status == 0"
           >
-            <v-btn
+            <v-btn v-if="user_type == 0"
               style="margin-left: 5px; margin-top: 5px"
               dark
               color="warning"
@@ -401,6 +401,9 @@ export default {
     table_loading() {
       return this.$store.state.saleCategory.table_loading;
     },
+    user_type() {
+      return localStorage.getItem("user_type");
+    },
   },
 
   methods: {
@@ -481,12 +484,19 @@ export default {
       };
       // // console.log(this.query);
       this.sales_categories_params = par;
-      const current = new Date();
-      const moment = require("moment");
-      this.date = moment(current).format("YYYY-MM-DD");
-      var filter = { name: "date", value: this.date };
-      Object.assign(this.$store.state.saleCategory.filter, filter);
-      this.$store.dispatch("saleCategory/getSalesCategories");
+      if (this.user_type != 4) {
+        console.log(this.user_type);
+        const current = new Date();
+        const moment = require("moment");
+        this.date = moment(current).format("YYYY-MM-DD");
+        var filter = { name: "date", value: this.date };
+        Object.assign(this.$store.state.saleCategory.filter, filter);
+        this.$store.dispatch("saleCategory/getSalesCategories");
+      } else {
+        console.log(this.user_type);
+
+        this.$store.dispatch("saleCategory/getSalesCategories");
+      }
     },
     searchDebounce() {
       clearTimeout(this._timerId);
