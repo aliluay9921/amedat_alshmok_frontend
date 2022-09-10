@@ -106,7 +106,7 @@ const ExamModule = {
                 filterSaleCategory = "&filter=" + JSON.stringify(state.filter);
             console.log(filterSaleCategory);
 
-            if (rootState.user_type != 0 && rootState.user_type != 4) {
+            if (rootState.user_type != 0 && rootState.user_type != 4 && rootState.user_type != 5) {
                 // getProcesByUserType.push(rootState.user_type);
                 // getProcesByUserType.push("3");
                 if (rootState.user_type == 3) {
@@ -121,6 +121,12 @@ const ExamModule = {
 
             } else {
                 getProcesByUserType = ["0", "1", "2", "3"];
+
+                // when proces type 
+                // 0 in sale category
+                // 1 in process 
+                // 2 in process Done 
+                // 3 done sale category
             }
             console.log(typeof (JSON.stringify(getProcesByUserType)));
 

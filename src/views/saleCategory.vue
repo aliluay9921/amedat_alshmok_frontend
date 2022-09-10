@@ -2,10 +2,20 @@
   <v-container>
     <v-card class="mt-5" elevation="4" shaped>
       <v-toolbar dark color="secondary">
-        <v-toolbar-title align-center> قسم المبيعات</v-toolbar-title>
+        <v-toolbar-title v-if="user_type == 0" align-center>
+          قسم المبيعات</v-toolbar-title
+        >
+        <v-toolbar-title v-if="user_type == 4" align-center>
+          قسم المندوبين</v-toolbar-title
+        >
+        <v-toolbar-title v-if="user_type == 5" align-center>
+          قسم المهندسين</v-toolbar-title
+        >
       </v-toolbar>
 
-      <v-card-text> <saleCategoryForm></saleCategoryForm> </v-card-text>
+      <v-card-text v-if="user_type != 5">
+        <saleCategoryForm></saleCategoryForm>
+      </v-card-text>
     </v-card>
     <v-divider></v-divider>
     <v-divider></v-divider>
@@ -26,6 +36,11 @@ export default {
   components: {
     saleCategoriesTable,
     saleCategoryForm,
+  },
+  computed: {
+    user_type() {
+      return localStorage.getItem("user_type");
+    },
   },
 };
 </script>

@@ -100,12 +100,14 @@
             <v-chip dark color="new">لايوجد ملاحظات</v-chip>
           </td>
           <td class="text-start" v-else>{{ item.notes }}</td>
+
           <td
             class="text-start"
             style="display: flex; flex-diractions: row"
             v-if="item.status == 0"
           >
-            <v-btn v-if="user_type == 0"
+            <v-btn
+              v-if="user_type == 0"
               style="margin-left: 5px; margin-top: 5px"
               dark
               color="warning"
@@ -113,6 +115,14 @@
               >ترحيل
             </v-btn>
             <v-btn
+              v-else-if="user_type == 5"
+              style="margin-left: 5px; margin-top: 5px"
+              dark
+              color="warning"
+              >لم ترحل بعد</v-btn
+            >
+            <v-btn
+              v-if="user_type != 5"
               style="margin-left: 5px; margin-top: 5px"
               dark
               color="red"
