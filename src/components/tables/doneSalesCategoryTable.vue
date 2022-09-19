@@ -164,6 +164,12 @@
             <v-btn dark color="primary" to="/representive">المندوبين</v-btn>
           </v-col>
           <v-col cols="12" sm="3">
+            <v-btn dark color="primary" to="/driver">السواق</v-btn>
+          </v-col>
+          <v-col cols="12" sm="3">
+            <v-btn dark color="primary" to="/car">السيارات</v-btn>
+          </v-col>
+          <v-col cols="12" sm="3">
             <v-btn dark color="primary" to="/doneSaleCategory"
               >المبيعات المكتملة</v-btn
             >
@@ -207,7 +213,13 @@
       loading-text="جاري التحميل يرجى الأنتظار"
     >
       <template v-slot:item="{ item }">
-        <tr>
+        <tr
+          :style="
+            item.paid == true && user_type == 3
+              ? 'background-color:#4CAF50;'
+              : ''
+          "
+        >
           <td class="text-start" v-if="item.status == 0">
             <v-chip color="yellow">قيد المراجعة</v-chip>
           </td>
@@ -221,7 +233,6 @@
           <td class="text-start" v-else-if="item.status == 3">
             <v-chip color="primary">نفذت</v-chip>
           </td>
-
           <td class="text-start" v-if="item.proces_type == 1">
             <v-chip color="primary">معمل العامرية</v-chip>
           </td>
@@ -250,8 +261,22 @@
             <v-chip dark color="new">لايوجد ملاحظات</v-chip>
           </td>
           <td class="text-start" v-else>{{ item.notes }}</td>
-          <td class="text-start">
-            <v-btn dark color="green" @click="done(item)">طباعة القيد</v-btn>
+          <td class="text-start" style="display: flex; flex-diractions: row">
+            <v-btn
+              dark
+              style="margin-left: 5px; margin-top: 5px"
+              color="info"
+              @click="done(item)"
+              >طباعة القيد</v-btn
+            >
+            <v-btn
+              v-if="user_type == 3 && item.paid == false"
+              dark
+              color="green"
+              @click="make_paid(item)"
+              style="margin-left: 5px; margin-top: 5px"
+              >تم تسديدها</v-btn
+            >
           </td>
         </tr>
       </template>
@@ -495,6 +520,11 @@ export default {
     },
   },
   methods: {
+    // this function to change status sale category to paid
+    make_paid(item) {
+      console.log(item);
+      this.$store.dispatch("saleCategory/makePaid", item.id);
+    },
     close() {
       this.dialog = false;
     },

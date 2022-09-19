@@ -1,44 +1,15 @@
 <template>
   <v-card class="elevation-1">
     <!-- show password -->
-    <template>
-      <v-row justify="center">
-        <v-dialog v-model="dialog1" persistent max-width="390">
-          <v-card>
-            <v-card-title class="text-h5 secondary white--text">
-              عرض كلمة المرور
-            </v-card-title>
-            <v-card-text class="mt-5 text-h5 dark--text"
-              >كلمة المرور الخاصة بهذا المستخدم
-              <v-spacer> </v-spacer>
-              <h3 style="color: blue">
-                <b>{{ password }}</b>
-              </h3>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                class="secondary"
-                color="white darken-1"
-                text
-                @click="dialog1 = false"
-              >
-                غلق
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-    </template>
 
-    <!-- dilog to delete representive -->
+    <!-- dilog to delete driver -->
 
     <template>
       <v-row justify="center">
         <v-dialog v-model="dialog" persistent max-width="390">
           <v-card>
             <v-card-title class="text-h5 secondary white--text">
-              حذف المندوب
+              حذف السائق
             </v-card-title>
             <v-card-text class="mt-5 text-h5 dark--text"
               ><b> هل أنت متأكد من عملية الحذف </b></v-card-text
@@ -57,7 +28,7 @@
                 class="secondary"
                 color="white darken-1"
                 text
-                @click="deleteRepresentive()"
+                @click="deletedriver()"
               >
                 تأكيد الحذف
               </v-btn>
@@ -91,7 +62,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="representives"
+      :items="drivers"
       :options.sync="pagination"
       :loading="table_loading || false"
       :page.sync="pagination.page"
@@ -100,32 +71,21 @@
       loading-text="جاري التحميل يرجى الأنتظار"
     >
       <template v-slot:item="{ item }">
-        <tr @dblclick="selectedRaw(item)">
+        <tr>
           <td class="text-start">{{ item.full_name }}</td>
-          <td class="text-start">{{ item.user_name }}</td>
-
           <td class="text-start">
-            <v-btn dark color="error" @click="getItem(item, (type = 1))"
-              >حذف</v-btn
-            >
-            <v-btn
-              dark
-              color="primary"
-              class="mr-2 ml-2"
-              @click="getItem(item, (type = 2))"
-              >عرض كلمة المرور</v-btn
-            >
+            <v-btn dark color="error" @click="getItem(item)">حذف</v-btn>
           </td>
         </tr>
       </template>
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>جدول المندوبين</v-toolbar-title>
+          <v-toolbar-title>جدول السواق</v-toolbar-title>
 
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-text-field
-            v-model="representiveQuery"
+            v-model="driverQuery"
             @input="queryChange"
             append-icon="mdi-magnify"
             label="بحث"
@@ -161,29 +121,21 @@ export default {
   data() {
     return {
       search: "",
-      rules: [(value) => !!value || "هذا الحقل مطلوب."],
-      dialog: false,
-      dialog1: false,
       item: {},
+      dialog: false,
 
       headers: [
         {
-          text: "اسم المندوب",
+          text: "اسم السائق",
           value: "full_name",
           align: "start",
           class: "secondary white--text title ",
         },
         {
-          text: "اسم المستخدم",
-          value: "user_name",
+          text: "الحذف",
+          value: "action",
           align: "start",
           class: "secondary white--text title ",
-        },
-
-        {
-          text: "العمليات",
-          align: "start",
-          class: "secondary white--text title",
         },
       ],
       pagination: {},
@@ -191,99 +143,81 @@ export default {
     };
   },
   computed: {
-    representives() {
-      return this.$store.state.representive.representives;
+    drivers() {
+      return this.$store.state.driver.drivers;
     },
     table_loading() {
-      return this.$store.state.representive.table_loading;
+      return this.$store.state.driver.table_loading;
     },
     pageCount: function () {
-      return this.$store.state.representive.pageCount;
+      return this.$store.state.driver.pageCount;
     },
     totalItems: function () {
-      return this.$store.state.representive.representives.length;
+      return this.$store.state.driver.drivers.length;
     },
-    representiveQuery: {
+    driverQuery: {
       set(val) {
-        this.$store.state.representive.representiveQuery = val;
+        this.$store.state.driver.driverQuery = val;
       },
       get() {
-        return this.$store.state.representive.representiveQuery;
+        return this.$store.state.driver.driverQuery;
       },
     },
-    representive_params: {
+    driver_params: {
       set(val) {
-        this.$store.state.representive.params = val;
+        this.$store.state.driver.params = val;
       },
       get() {
-        return this.$store.state.representive.params;
+        return this.$store.state.driver.params;
       },
-    },
-    password() {
-      return this.$store.state.representive.infoUser;
     },
   },
   methods: {
-    selectedRaw(item) {
-      console.log(item);
-      this.$store.state.representive.selected_object = {};
-      Object.assign(this.$store.state.representive.selected_object, item);
-      this.$store.state.representive.isEdit = true;
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
-    },
     queryChange(val) {
       this.searchDebounce();
     },
-    getItem(item, type) {
+    getItem(item) {
       console.log(item);
-      if (type == 1) {
-        this.dialog = true;
-        this.item = item;
-      } else if (type == 2) {
-        this.$store.dispatch("representive/getUserInfo", item.id);
-        this.dialog1 = true;
-      }
+      this.dialog = true;
+      this.item = item;
     },
-    deleteRepresentive() {
-      this.$store.dispatch("representive/deleteRepresentive", this.item);
+
+    deletedriver() {
+      this.$store.dispatch("driver/deleteDriver", this.item);
+
       this.dialog = false;
       this.item = {};
     },
-    getRepresentives() {
+    getDrivers() {
       let pagination = this.pagination;
       let par = {
         ...pagination,
         dropdown: false,
       };
-      // // console.log(this.query);
-      this.representive_params = par;
-      this.$store.dispatch("representive/getRepresentives");
+      this.driver_params = par;
+      this.$store.dispatch("driver/getDrivers");
     },
 
     searchDebounce() {
       clearTimeout(this._timerId);
       // delay new call 1000ms
       this._timerId = setTimeout(() => {
-        this.$store.dispatch("representive/resetFields");
+        this.$store.dispatch("driver/resetFields");
         this.pagination.page = 1;
-        this.getRepresentives();
+        this.getDrivers();
       }, 1000);
     },
   },
   created() {
-    this.$store.dispatch("representive/resetFields");
+    this.$store.dispatch("driver/resetFields");
 
     // this.getInvoicemnts();
   },
   watch: {
     pagination: {
       handler() {
-        this.getRepresentives();
-        this.representive_params.page = 1;
+        this.getDrivers();
+        this.driver_params.page = 1;
       },
       deep: true,
     },

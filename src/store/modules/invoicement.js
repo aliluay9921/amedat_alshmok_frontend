@@ -35,7 +35,7 @@ const invoicement = {
             state.invoicemnt_state = "error";
         },
         add_invoicemnt_success(state, invoicemnt) {
-            state.invoicemnts.puse(invoicemnt);
+            state.invoicemnts.push(invoicemnt);
             state.invoicemnt_state = "done";
             console.log(state.invoicemnts.length)
             state.table_loading = false;
@@ -66,7 +66,6 @@ const invoicement = {
                 state.invoicemntQuery.length > 0
             ) query = `&query=${state.invoicemntQuery}`;
             return new Promise((resolve, reject) => {
-
                 axios({
                     url: `${rootState.server}` + "/api/get_invoicemnts" + "?skip=" + skip +
                         "&limit=" +
@@ -84,6 +83,7 @@ const invoicement = {
                 }).catch((err) => {
                     state.table_loading = false;
                     reject(err);
+                    console.log(err);
                     commit("invoicemnts_error");
                     dispatch(
                         "snackbarToggle",

@@ -8,6 +8,8 @@ import invoicment from "../views/invoicment.vue";
 import processDone from "../views/processingDone.vue";
 import doneSaleCategory from "../views/doneSaleCategory.vue";
 import representive from "../views/representive.vue";
+import driver from "../views/driver.vue";
+import car from "../views/car.vue";
 
 Vue.use(VueRouter);
 
@@ -58,6 +60,20 @@ const routes = [
     path: "/representive",
     name: "representive",
     component: representive,
+    meta: {
+      requiresAuth: true,
+    },
+  }, {
+    path: "/driver",
+    name: "driver",
+    component: driver,
+    meta: {
+      requiresAuth: true,
+    },
+  }, {
+    path: "/car",
+    name: "car",
+    component: car,
     meta: {
       requiresAuth: true,
     },

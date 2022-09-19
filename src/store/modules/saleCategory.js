@@ -67,6 +67,13 @@ const ExamModule = {
             Vue.set(state.sales_categories, index, done_sale_category);
             state.sela_category_state = "done";
             state.table_loading = false;
+        },
+        make_paid(state, sale_category_paid) {
+            console.log(sale_category_paid)
+            let index = state.sales_categories.findIndex((e) => e.id == sale_category_paid.id);
+            Vue.set(state.sales_categories, index, sale_category_paid);
+            state.sela_category_state = "done";
+            state.table_loading = false;
         }
 
 
@@ -105,8 +112,8 @@ const ExamModule = {
             if (Object.keys(state.filter).length != 0)
                 filterSaleCategory = "&filter=" + JSON.stringify(state.filter);
             console.log(filterSaleCategory);
-
-            if (rootState.user_type != 0 && rootState.user_type != 4 && rootState.user_type != 5) {
+            // اذا كان اليوزر ولا واحد من المكتوبين في الشرط يدخل للكوندشن 
+            if (rootState.user_type != 0 && rootState.user_type != 4 && rootState.user_type != 5 && rootState.user_type != 6) {
                 // getProcesByUserType.push(rootState.user_type);
                 // getProcesByUserType.push("3");
                 if (rootState.user_type == 3) {
@@ -121,12 +128,8 @@ const ExamModule = {
 
             } else {
                 getProcesByUserType = ["0", "1", "2", "3"];
+                // type of process 
 
-                // when proces type 
-                // 0 in sale category
-                // 1 in process 
-                // 2 in process Done 
-                // 3 done sale category
             }
             console.log(typeof (JSON.stringify(getProcesByUserType)));
 
@@ -287,6 +290,39 @@ const ExamModule = {
                 }).then(resp => {
                     state.table_loading = false
                     commit("done_invoice_succsess", resp.data.result[0])
+                    dispatch(
+                        "snackbarToggle",
+                        { toggle: true, text: resp.data.message },
+                        { root: true }
+                    );
+                    resolve(resp);
+                }).catch((err) => {
+                    state.table_loading = false;
+                    commit("sale_category_error");
+                    dispatch(
+                        "snackbarToggle",
+                        { toggle: true, text: err.response.data.message },
+                        { root: true }
+                    );
+
+                    console.warn(err);
+                });
+            });
+        },
+        async makePaid({ commit, state, dispatch, rootState }, data) {
+            state.table_loading = true
+            return new Promise((resolve, reject) => {
+                commit("sale_category_request");
+                axios({
+                    url: `${rootState.server}` + "/api/make_paid",
+                    data: { sale_category_id: data },
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    method: "PUT",
+                }).then(resp => {
+                    state.table_loading = false
+                    commit("make_paid", resp.data.result[0])
                     dispatch(
                         "snackbarToggle",
                         { toggle: true, text: resp.data.message },

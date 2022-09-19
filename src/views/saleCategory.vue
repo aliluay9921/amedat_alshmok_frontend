@@ -11,6 +11,9 @@
         <v-toolbar-title v-if="user_type == 5" align-center>
           قسم المهندسين</v-toolbar-title
         >
+        <v-toolbar-title v-if="user_type == 6" align-center>
+          الأدارة</v-toolbar-title
+        >
       </v-toolbar>
 
       <v-card-text v-if="user_type != 5">

@@ -115,12 +115,21 @@
                               style="text-align: center"
                               v-model="driver_name"
                             /> -->
-                            <v-combobox
+                            <!-- <v-combobox
                               v-model="driver_name"
                               :items="drivers"
                               append-icon=""
                               clear-icon="$clear"
-                            ></v-combobox>
+                            ></v-combobox> -->
+                            <v-autocomplete
+                              :items="drivers"
+                              v-model="driver_name"
+                              item-text="full_name"
+                              item-value="full_name"
+                              :menu-props="menu_props"
+                              append-icon=""
+                            >
+                            </v-autocomplete>
                           </div>
                         </div>
                         <div class="details">
@@ -128,13 +137,23 @@
                             <label for=""> تسلسل السيارة</label>
                           </div>
                           <div class="data">
-                            <v-combobox
+                            <!-- <v-combobox
                               v-model="car_sequence"
                               :items="cars_sequence"
                               append-icon=""
                               @change="addCarNumber"
                               clear-icon="$clear"
-                            ></v-combobox>
+                            ></v-combobox> -->
+                            <v-autocomplete
+                              :items="cars"
+                              v-model="car_sequence"
+                              item-text="car_sequence"
+                              item-value="car_sequence"
+                              :menu-props="menu_props_car"
+                              append-icon=""
+                              @change="getCarNumber()"
+                            >
+                            </v-autocomplete>
                           </div>
                         </div>
                         <div class="details">
@@ -229,7 +248,17 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-
+                <v-col cols="auto">
+                  <v-btn
+                    :disabled="!this.print_invoice"
+                    v-print="'#printMe'"
+                    secondary
+                    color="secondary"
+                    @click="print_invoice_button"
+                  >
+                    طباعة الفاتورة</v-btn
+                  >
+                </v-col>
                 <v-col cols="auto">
                   <v-btn
                     secondary
@@ -243,11 +272,11 @@
                       this.driver_name == null
                     "
                     @click="add_process"
-                    v-print="'#printMe'"
                   >
-                    طباعة
+                    حفظ الفاتورة
                   </v-btn>
                 </v-col>
+
                 <v-col cols="auto">
                   <v-btn secondary color="secondary" @click="doneInvoice">
                     انهاء الحساب
@@ -390,6 +419,7 @@ export default {
         popTitle: "طباعة سند قبض/صرف",
         extraHead: '<meta http-equiv="Content-Language"content="en-ar"/>',
       },
+      print_invoice: false,
       headers: [
         {
           text: "الحالة",
@@ -496,93 +526,93 @@ export default {
           class: "secondary white--text title",
         },
       ],
-      drivers: [
-        "قصي أحمد",
-        "محمود علاء",
-        "زهير عيفان",
-        "محمد علي",
-        "احمد سامي",
-        "محمد قاسم",
-        "حقي عبد الحسن",
-        "اورنس علي",
-        "سلام ماضي",
-        "طيب كامل",
-        "خليل يوسف",
-        "رواد حامد",
-        "وليد ياسين",
-        "هشام ماجد",
-        "عمار ياسر",
-        "رائد محمد",
-        "عمار رافع",
-        "حسن ابراهيم",
-        "محمد شهاب",
-        "حسين هادي",
-        "محمد اكرم",
-        "ابراهيم محمد",
-        "رياض احمد",
-        "وائل محمد",
-        "عبدالله سرحان",
-        "مصطفى طارق",
-        "حيدر محمد",
-      ],
-      cars_sequence: [
-        "خ22",
-        "خ24",
-        "خ25",
-        "خ26",
-        "خ27",
-        "خ28",
-        "خ29",
-        "خ30",
-        "خ31",
-        "خ32",
-        "خ33",
-        "خ34",
-        "خ35",
-        "خ36",
-        "خ37",
-        "خ38",
-        "خ39",
-        "خ40",
-        "خ41",
-        "خ42",
-        "خ43",
-        "خ44",
-        "خ45",
-        "خ46",
-        "خ47",
-        "خ48",
-        "خ49",
-      ],
-      cars_info: [
-        { sequence: "خ22", number: "8073" },
-        { sequence: "خ24", number: "14310" },
-        { sequence: "خ25", number: "14731" },
-        { sequence: "خ26", number: "15146" },
-        { sequence: "خ27", number: "15253" },
-        { sequence: "خ28", number: "9269" },
-        { sequence: "خ29", number: "10195" },
-        { sequence: "خ30", number: "9766" },
-        { sequence: "خ31", number: "6460" },
-        { sequence: "خ32", number: "5207" },
-        { sequence: "خ33", number: "6366" },
-        { sequence: "خ34", number: "14277" },
-        { sequence: "خ35", number: "6385" },
-        { sequence: "خ36", number: "10335" },
-        { sequence: "خ37", number: "10263" },
-        { sequence: "خ38", number: "7854" },
-        { sequence: "خ39", number: "6409" },
-        { sequence: "خ40", number: "10442" },
-        { sequence: "خ41", number: "6330" },
-        { sequence: "خ42", number: "4509" },
-        { sequence: "خ43", number: "8817" },
-        { sequence: "خ44", number: "6313" },
-        { sequence: "خ45", number: "6291" },
-        { sequence: "خ46", number: "6553" },
-        { sequence: "خ47", number: "9943" },
-        { sequence: "خ48", number: "6495" },
-        { sequence: "خ49", number: "10154" },
-      ],
+      // drivers: [
+      //   "قصي أحمد",
+      //   "محمود علاء",
+      //   "زهير عيفان",
+      //   "محمد علي",
+      //   "احمد سامي",
+      //   "محمد قاسم",
+      //   "حقي عبد الحسن",
+      //   "اورنس علي",
+      //   "سلام ماضي",
+      //   "طيب كامل",
+      //   "خليل يوسف",
+      //   "رواد حامد",
+      //   "وليد ياسين",
+      //   "هشام ماجد",
+      //   "عمار ياسر",
+      //   "رائد محمد",
+      //   "عمار رافع",
+      //   "حسن ابراهيم",
+      //   "محمد شهاب",
+      //   "حسين هادي",
+      //   "محمد اكرم",
+      //   "ابراهيم محمد",
+      //   "رياض احمد",
+      //   "وائل محمد",
+      //   "عبدالله سرحان",
+      //   "مصطفى طارق",
+      //   "حيدر محمد",
+      // ],
+      // cars_sequence: [
+      //   "خ22",
+      //   "خ24",
+      //   "خ25",
+      //   "خ26",
+      //   "خ27",
+      //   "خ28",
+      //   "خ29",
+      //   "خ30",
+      //   "خ31",
+      //   "خ32",
+      //   "خ33",
+      //   "خ34",
+      //   "خ35",
+      //   "خ36",
+      //   "خ37",
+      //   "خ38",
+      //   "خ39",
+      //   "خ40",
+      //   "خ41",
+      //   "خ42",
+      //   "خ43",
+      //   "خ44",
+      //   "خ45",
+      //   "خ46",
+      //   "خ47",
+      //   "خ48",
+      //   "خ49",
+      // ],
+      // cars_info: [
+      //   { sequence: "خ22", number: "8073" },
+      //   { sequence: "خ24", number: "14310" },
+      //   { sequence: "خ25", number: "14731" },
+      //   { sequence: "خ26", number: "15146" },
+      //   { sequence: "خ27", number: "15253" },
+      //   { sequence: "خ28", number: "9269" },
+      //   { sequence: "خ29", number: "10195" },
+      //   { sequence: "خ30", number: "9766" },
+      //   { sequence: "خ31", number: "6460" },
+      //   { sequence: "خ32", number: "5207" },
+      //   { sequence: "خ33", number: "6366" },
+      //   { sequence: "خ34", number: "14277" },
+      //   { sequence: "خ35", number: "6385" },
+      //   { sequence: "خ36", number: "10335" },
+      //   { sequence: "خ37", number: "10263" },
+      //   { sequence: "خ38", number: "7854" },
+      //   { sequence: "خ39", number: "6409" },
+      //   { sequence: "خ40", number: "10442" },
+      //   { sequence: "خ41", number: "6330" },
+      //   { sequence: "خ42", number: "4509" },
+      //   { sequence: "خ43", number: "8817" },
+      //   { sequence: "خ44", number: "6313" },
+      //   { sequence: "خ45", number: "6291" },
+      //   { sequence: "خ46", number: "6553" },
+      //   { sequence: "خ47", number: "9943" },
+      //   { sequence: "خ48", number: "6495" },
+      //   { sequence: "خ49", number: "10154" },
+      // ],
       car_sequence: "",
       car_number: "",
       invoicement_no: "",
@@ -590,6 +620,26 @@ export default {
       item: {},
       pagination: {},
       items: [5, 10, 25, 50, 100],
+      menu_props: {
+        closeOnClick: false,
+        closeOnContentClick: false,
+        disableKeys: true,
+        openOnClick: false,
+        maxHeight: 150,
+        offsetY: true,
+        offsetOverflow: true,
+        transition: false,
+      },
+      menu_props_car: {
+        closeOnClick: false,
+        closeOnContentClick: false,
+        disableKeys: true,
+        openOnClick: false,
+        maxHeight: 150,
+        offsetY: true,
+        offsetOverflow: true,
+        transition: false,
+      },
     };
   },
   computed: {
@@ -638,6 +688,12 @@ export default {
     invoicemnts() {
       return this.$store.state.invoicement.invoicemnts;
     },
+    drivers() {
+      return this.$store.state.driver.drivers;
+    },
+    cars() {
+      return this.$store.state.car.cars;
+    },
   },
   methods: {
     close() {
@@ -656,11 +712,18 @@ export default {
       this.$store.dispatch("saleCategory/getSalesCategories");
     },
 
-    addCarNumber() {
-      console.log("here car number" + this.car_sequence);
-      let filter = this.cars_info.filter(
-        (e) => e.sequence == this.car_sequence
-      )[0].number;
+    // addCarNumber() {
+    //   console.log("here car number" + this.car_sequence);
+    //   let filter = this.cars_info.filter(
+    //     (e) => e.sequence == this.car_sequence
+    //   )[0].number;
+    //   this.car_number = filter;
+    //   console.log(filter);
+    // },
+    getCarNumber() {
+      let filter = this.cars.filter(
+        (e) => e.car_sequence == this.car_sequence
+      )[0].car_number;
       this.car_number = filter;
       console.log(filter);
     },
@@ -674,16 +737,26 @@ export default {
       data["invoice_no"] = this.invoicement_no + 1;
       data["sequence"] = this.invoicement_sequence + 1;
 
-      this.$store.dispatch("invoicement/addInvoicemnt", data);
+      // this.$store.dispatch("invoicement/addInvoicemnt", data);
+      this.$store.dispatch("invoicement/addInvoicemnt", data).then((res) => {
+        console.log("here i am");
+        this.print_invoice = true;
+      });
+
       this.$store.dispatch("saleCategory/getSalesCategories");
       this.$store.dispatch("invoicement/getInvoicemnts");
-      this.dialog = false;
+      // this.dialog = false;
       // this.car_number = "";
       // this.driver_name = "";
       // this.quantity_car = "";
       // this.car_sequence = "";
     },
+    print_invoice_button() {
+      this.print_invoice = false;
+      this.dialog = false;
+    },
     done(item) {
+      this.print_invoice = false;
       this.$store.dispatch("invoicement/getInvoicemnts");
       this.driver_name = "";
       this.car_number = "";
@@ -733,6 +806,17 @@ export default {
         this.getSalesCategories();
       }, 1000);
     },
+    getDrivers() {
+      // if (this.$store.state.driver.driver_state == "finished") return;
+      this.$store.dispatch("driver/getDrivers");
+    },
+
+    // car drop down functions with watchers
+
+    getCars() {
+      // if (this.$store.state.car.car_state == "finished") return;
+      this.$store.dispatch("car/getCars");
+    },
   },
   created() {
     // this.getSalesSendingCategories();
@@ -743,6 +827,8 @@ export default {
     pagination: {
       handler() {
         this.getSalesCategories();
+        this.getDrivers();
+        this.getCars();
         this.sales_categories_params.page = 1;
       },
       deep: true,
@@ -801,7 +887,7 @@ export default {
 }
 .v-select.v-text-field:not(.v-text-field--single-line) input {
   margin-top: -20px;
-  margin-bottom: 5px;
+  margin-bottom: 16px !important;
   text-align: center;
   /* overflow: hidden; */
   /* outline: none; */

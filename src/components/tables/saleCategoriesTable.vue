@@ -69,17 +69,30 @@
         </v-toolbar>
       </template>
       <template v-slot:item="{ item }">
-        <tr @dblclick="selectedRaw(item)">
+        <tr
+          @dblclick="selectedRaw(item)"
+          :style="
+            item.paid == true && user_type == 6
+              ? 'background-color:#4CAF50;'
+              : ''
+          "
+        >
           <td class="text-start" v-if="item.status == 0">
             <v-chip dark color="warning">قيد المراجعة</v-chip>
           </td>
           <td class="text-start" v-else-if="item.status == 1">
-            <v-chip dark color="green">تم ألترحيل الى المعمل </v-chip>
+            <v-chip dark color="green" v-if="item.proces_type == 1"
+              >تم ألترحيل الى معمل العامرية
+            </v-chip>
+            <v-chip dark color="green" v-else-if="item.proces_type == 2"
+              >تم ألترحيل الى معمل الفروسية
+            </v-chip>
+            <v-chip dark color="green" v-else>ترحيل مشترك</v-chip>
           </td>
           <td class="text-start" v-else-if="item.status == 2">
             <v-chip dark color="primary">بدأ التنفيذ بها</v-chip>
           </td>
-          <td class="text-start" v-else>
+          <td class="text-start" v-else-if="item.status == 3">
             <v-chip dark color="new">تم تنفيذها </v-chip>
           </td>
           <td class="text-start">{{ item.place }}</td>
@@ -107,7 +120,7 @@
             v-if="item.status == 0"
           >
             <v-btn
-              v-if="user_type == 0"
+              v-if="user_type == 0 || user_type == 6"
               style="margin-left: 5px; margin-top: 5px"
               dark
               color="warning"

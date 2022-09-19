@@ -1,44 +1,15 @@
 <template>
   <v-card class="elevation-1">
     <!-- show password -->
-    <template>
-      <v-row justify="center">
-        <v-dialog v-model="dialog1" persistent max-width="390">
-          <v-card>
-            <v-card-title class="text-h5 secondary white--text">
-              عرض كلمة المرور
-            </v-card-title>
-            <v-card-text class="mt-5 text-h5 dark--text"
-              >كلمة المرور الخاصة بهذا المستخدم
-              <v-spacer> </v-spacer>
-              <h3 style="color: blue">
-                <b>{{ password }}</b>
-              </h3>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                class="secondary"
-                color="white darken-1"
-                text
-                @click="dialog1 = false"
-              >
-                غلق
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-    </template>
 
-    <!-- dilog to delete representive -->
+    <!-- dilog to delete car -->
 
     <template>
       <v-row justify="center">
         <v-dialog v-model="dialog" persistent max-width="390">
           <v-card>
             <v-card-title class="text-h5 secondary white--text">
-              حذف المندوب
+              حذف سيارة
             </v-card-title>
             <v-card-text class="mt-5 text-h5 dark--text"
               ><b> هل أنت متأكد من عملية الحذف </b></v-card-text
@@ -57,7 +28,7 @@
                 class="secondary"
                 color="white darken-1"
                 text
-                @click="deleteRepresentive()"
+                @click="deletecar()"
               >
                 تأكيد الحذف
               </v-btn>
@@ -91,7 +62,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="representives"
+      :items="cars"
       :options.sync="pagination"
       :loading="table_loading || false"
       :page.sync="pagination.page"
@@ -100,32 +71,22 @@
       loading-text="جاري التحميل يرجى الأنتظار"
     >
       <template v-slot:item="{ item }">
-        <tr @dblclick="selectedRaw(item)">
-          <td class="text-start">{{ item.full_name }}</td>
-          <td class="text-start">{{ item.user_name }}</td>
-
+        <tr>
+          <td class="text-start">{{ item.car_number }}</td>
+          <td class="text-start">{{ item.car_sequence }}</td>
           <td class="text-start">
-            <v-btn dark color="error" @click="getItem(item, (type = 1))"
-              >حذف</v-btn
-            >
-            <v-btn
-              dark
-              color="primary"
-              class="mr-2 ml-2"
-              @click="getItem(item, (type = 2))"
-              >عرض كلمة المرور</v-btn
-            >
+            <v-btn dark color="error" @click="getItem(item)">حذف</v-btn>
           </td>
         </tr>
       </template>
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>جدول المندوبين</v-toolbar-title>
+          <v-toolbar-title>جدول السيارات</v-toolbar-title>
 
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
           <v-text-field
-            v-model="representiveQuery"
+            v-model="carQuery"
             @input="queryChange"
             append-icon="mdi-magnify"
             label="بحث"
@@ -161,129 +122,109 @@ export default {
   data() {
     return {
       search: "",
-      rules: [(value) => !!value || "هذا الحقل مطلوب."],
-      dialog: false,
-      dialog1: false,
       item: {},
 
       headers: [
         {
-          text: "اسم المندوب",
-          value: "full_name",
+          text: "رقم السيارة",
+          value: "car_number",
           align: "start",
           class: "secondary white--text title ",
         },
         {
-          text: "اسم المستخدم",
-          value: "user_name",
+          text: "تسلسل السيارة",
+          value: "car_sequence",
           align: "start",
           class: "secondary white--text title ",
         },
-
         {
-          text: "العمليات",
+          text: "الحذف",
+          value: "action",
           align: "start",
-          class: "secondary white--text title",
+          class: "secondary white--text title ",
         },
       ],
       pagination: {},
       items: [5, 10, 25, 50, 100],
+      dialog: false,
     };
   },
   computed: {
-    representives() {
-      return this.$store.state.representive.representives;
+    cars() {
+      return this.$store.state.car.cars;
     },
     table_loading() {
-      return this.$store.state.representive.table_loading;
+      return this.$store.state.car.table_loading;
     },
     pageCount: function () {
-      return this.$store.state.representive.pageCount;
+      return this.$store.state.car.pageCount;
     },
     totalItems: function () {
-      return this.$store.state.representive.representives.length;
+      return this.$store.state.car.cars.length;
     },
-    representiveQuery: {
+    carQuery: {
       set(val) {
-        this.$store.state.representive.representiveQuery = val;
+        this.$store.state.car.carQuery = val;
       },
       get() {
-        return this.$store.state.representive.representiveQuery;
+        return this.$store.state.car.carQuery;
       },
     },
-    representive_params: {
+    car_params: {
       set(val) {
-        this.$store.state.representive.params = val;
+        this.$store.state.car.params = val;
       },
       get() {
-        return this.$store.state.representive.params;
+        return this.$store.state.car.params;
       },
-    },
-    password() {
-      return this.$store.state.representive.infoUser;
     },
   },
   methods: {
-    selectedRaw(item) {
-      console.log(item);
-      this.$store.state.representive.selected_object = {};
-      Object.assign(this.$store.state.representive.selected_object, item);
-      this.$store.state.representive.isEdit = true;
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
-    },
     queryChange(val) {
       this.searchDebounce();
     },
-    getItem(item, type) {
-      console.log(item);
-      if (type == 1) {
-        this.dialog = true;
-        this.item = item;
-      } else if (type == 2) {
-        this.$store.dispatch("representive/getUserInfo", item.id);
-        this.dialog1 = true;
-      }
+    getItem(item) {
+      this.item = item;
+      this.dialog = true;
     },
-    deleteRepresentive() {
-      this.$store.dispatch("representive/deleteRepresentive", this.item);
+    deletecar() {
+      console.log(this.item);
+
+      this.$store.dispatch("car/deleteCar", this.item);
       this.dialog = false;
       this.item = {};
     },
-    getRepresentives() {
+    getCars() {
       let pagination = this.pagination;
       let par = {
         ...pagination,
         dropdown: false,
       };
       // // console.log(this.query);
-      this.representive_params = par;
-      this.$store.dispatch("representive/getRepresentives");
+      this.car_params = par;
+      this.$store.dispatch("car/getCars");
     },
 
     searchDebounce() {
       clearTimeout(this._timerId);
       // delay new call 1000ms
       this._timerId = setTimeout(() => {
-        this.$store.dispatch("representive/resetFields");
+        this.$store.dispatch("car/resetFields");
         this.pagination.page = 1;
-        this.getRepresentives();
+        this.getCars();
       }, 1000);
     },
   },
   created() {
-    this.$store.dispatch("representive/resetFields");
+    this.$store.dispatch("car/resetFields");
 
     // this.getInvoicemnts();
   },
   watch: {
     pagination: {
       handler() {
-        this.getRepresentives();
-        this.representive_params.page = 1;
+        this.getCars();
+        this.car_params.page = 1;
       },
       deep: true,
     },

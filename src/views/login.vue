@@ -99,7 +99,12 @@ export default {
           if (token == undefined) {
             this.$router.replace("/login");
           } else {
-            if (user_type == 0 || user_type == 4 || user_type == 5) {
+            if (
+              user_type == 0 ||
+              user_type == 4 ||
+              user_type == 5 ||
+              user_type == 6
+            ) {
               this.$router.replace("/");
             } else if (user_type == 1 || user_type == 2) {
               this.$router.replace("/processing");

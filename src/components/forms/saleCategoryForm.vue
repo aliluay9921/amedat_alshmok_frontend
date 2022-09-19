@@ -55,7 +55,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" sm="3" v-if="user_type == 0">
+          <v-col cols="12" sm="3" v-if="user_type == 0 || user_type == 6">
             <!-- <v-text-field
               v-model="selected_object.name_representative"
               placeholder="اسم المندوب"
@@ -300,8 +300,16 @@ export default {
         "C-40",
         "C-45",
         "C-50",
+        "k-150",
+        "k-200",
+        "k-250",
+        "k-300",
+        "k-350",
+        "k-400",
+        "k-450",
+        "k-500",
       ],
-      ecment_type: ["عادي", "مقاوم"],
+      ecment_type: ["عادي", "مقاوم", "فحص", "طيف"],
       radios: "",
       place: "",
       name_customer: "",

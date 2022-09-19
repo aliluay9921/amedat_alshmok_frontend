@@ -6,13 +6,16 @@ import axios from "axios";
 import saleCategory from '../store/modules/saleCategory'
 import invoicement from '../store/modules/invoicement'
 import representive from '../store/modules/representive'
+import driver from '../store/modules/driver'
+import car from '../store/modules/car'
 
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    server: "http://138.68.113.224:8888",
+    // server: "http://138.68.113.224:8888",
+    server: "http://127.0.0.1:8000",
     snackbar: false,
     textSnackbar: "",
     isLoggedIn: false,
@@ -108,6 +111,6 @@ export default new Vuex.Store({
 
   },
   modules: {
-    saleCategory, invoicement, representive
+    saleCategory, invoicement, representive, driver, car
   },
 });
