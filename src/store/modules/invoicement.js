@@ -10,9 +10,8 @@ const invoicement = {
         invoicemntQuery: "",
         pageCount: 1,
         params: {
-
             page: 1,
-            itemsPerPage: 10,
+            itemsPerPage: 50,
         },
     }),
     getters: {},
@@ -48,14 +47,14 @@ const invoicement = {
             state.table_loading = false;
             state.params = {
                 page: 1,
-                itemsPerPage: 10,
+                itemsPerPage: 50,
             };
         },
         async getInvoicemnts({ commit, state, dispatch, rootState }) {
             if (state.invoicemnts_state != "done") return -1;
             state.table_loading = true;
-            console.log("here")
             let data = state.params;
+            console.log(data.itemsPerPage)
 
             let skip = (data.page - 1) * data.itemsPerPage;
             let limit = data.itemsPerPage;

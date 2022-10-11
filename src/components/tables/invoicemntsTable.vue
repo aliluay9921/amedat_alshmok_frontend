@@ -481,6 +481,7 @@ export default {
     },
     getInvoicemnts() {
       let pagination = this.pagination;
+      console.log(pagination);
       let par = {
         ...pagination,
       };
@@ -509,6 +510,8 @@ export default {
       handler() {
         this.getInvoicemnts();
         this.invoicemnt_params.page = 1;
+        // this.pagination.itemsPearPage = 50;
+        // this.invoicemnt_params.itemsPerPage = 50;
       },
       deep: true,
     },

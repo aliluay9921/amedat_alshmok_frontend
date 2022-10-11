@@ -300,6 +300,9 @@
     >
       <template v-slot:item="{ item }">
         <tr>
+          <td class="text-start">
+            <v-btn dark color="green" @click="done(item)">بدأ التنفيذ </v-btn>
+          </td>
           <td class="text-start" v-if="item.status == 0">
             <v-chip color="yellow">قيد المراجعة</v-chip>
           </td>
@@ -339,9 +342,6 @@
             <v-chip dark color="new">لايوجد ملاحظات</v-chip>
           </td>
           <td class="text-start" v-else>{{ item.notes }}</td>
-          <td class="text-start">
-            <v-btn dark color="green" @click="done(item)">بدأ التنفيذ </v-btn>
-          </td>
         </tr>
       </template>
       <template v-slot:top>
@@ -410,6 +410,11 @@ export default {
       print_invoice: false,
 
       headers: [
+        {
+          text: "ترحيل",
+          align: "start",
+          class: "secondary white--text title",
+        },
         {
           text: "الحالة",
           value: "status",
@@ -505,12 +510,6 @@ export default {
         {
           text: "الملاحضات",
           value: "notes",
-          align: "start",
-          class: "secondary white--text title",
-        },
-
-        {
-          text: "ترحيل",
           align: "start",
           class: "secondary white--text title",
         },
@@ -749,7 +748,9 @@ export default {
       );
       console.log(invoice.length);
       console.log(this.invoicemnts[0]);
-      this.invoicement_sequence = invoice.length;
+      // this.invoicement_sequence = invoice.length;
+      this.invoicement_sequence = item.SequenceInvoicment;
+
       this.invoicement_no = this.invoicemnts[0].countinvoicemnts;
       // console.log(invoice[0].countinvoicemnts);
       // this.$store.dispatch("saleCategory/sendingToProcessing", item);

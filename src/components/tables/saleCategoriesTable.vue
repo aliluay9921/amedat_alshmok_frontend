@@ -74,6 +74,8 @@
           :style="
             item.paid == true && user_type == 6
               ? 'background-color:#4CAF50;'
+              : '' || item.status != 0
+              ? 'background-color:pink;'
               : ''
           "
         >
@@ -99,16 +101,32 @@
           <td class="text-start">{{ item.name_customer }}</td>
           <td class="text-start">{{ item.degree }}/{{ item.type }}</td>
           <td class="text-start">{{ item.quantity }}</td>
+          <td class="text-start" dir="ltr">{{ item.time }}</td>
+
+          <td class="text-start">{{ item.representativ.full_name }}</td>
+          <td
+            class="text-start"
+            :style="
+              item.go_bump == 1 && item.paid == false
+                ? 'background-color:pink'
+                : ''
+            "
+          >
+            {{ item.bump }}
+          </td>
           <td class="text-start">{{ item.man_buliding }}</td>
           <td class="text-start">{{ item.workers }}</td>
-          <td class="text-start">{{ item.bump }}</td>
-          <td class="text-start">{{ item.representativ.full_name }}</td>
+
+          <td class="text-start" dir="ltr">
+            {{ item.created_at | moment("DD.MM.YYYY, h:mm A") }}
+          </td>
           <td class="text-start">{{ item.phone_number }}</td>
           <td class="text-start">{{ item.price }}</td>
           <td class="text-center">{{ item.actual_quantity }}</td>
           <td class="text-start">{{ item.date }}</td>
 
-          <td class="text-start" dir="ltr">{{ item.time }}</td>
+          <!-- <span>{{ someDate | moment("dddd, MMMM Do YYYY, h:mm:ss a") }}</span>
+ -->
           <td class="text-start" v-if="item.notes == null">
             <v-chip dark color="new">لايوجد ملاحظات</v-chip>
           </td>
@@ -127,6 +145,15 @@
               @click="sending(item)"
               >ترحيل
             </v-btn>
+            <v-btn
+              v-if="user_type == 0"
+              style="margin-left: 5px; margin-top: 5px"
+              dark
+              color="pink"
+              @click="goBump(item)"
+              >ترحيل البم
+            </v-btn>
+
             <v-btn
               v-else-if="user_type == 5"
               style="margin-left: 5px; margin-top: 5px"
@@ -151,6 +178,17 @@
           </td>
           <td class="text-start" v-else>
             <v-btn dark color="new">تم تنفيذها </v-btn>
+          </td>
+          <td>
+            <v-btn
+              v-if="user_type == 0"
+              :disabled="user_type == 0 ? false : true"
+              style="margin-left: 5px; margin-top: 5px"
+              dark
+              color="#4C0027"
+              @click="addNote(item)"
+              >أضافة ملاحضة
+            </v-btn>
           </td>
         </tr>
       </template>
@@ -278,6 +316,51 @@
         </v-dialog>
       </v-row>
     </template>
+
+    <!-- add note  -->
+    <template>
+      <v-row justify="center">
+        <v-dialog v-model="dialog2" persistent max-width="790">
+          <v-card>
+            <v-card-title class="text-h5 secondary white--text">
+              أضف ملاحظة
+            </v-card-title>
+            <v-card-text class="mt-5 text-h5 dark--text">
+              <v-row class="mt-5">
+                <v-col>
+                  <v-text-field
+                    v-model="notes"
+                    placeholder="أضف ملاحظة"
+                    label="أضف ملاحظة"
+                    hide-details="auto"
+                    clearable
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="dialog2 = false"
+              >
+                غلق
+              </v-btn>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="sendNote()"
+              >
+                أضافة ملاحظة
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
   </v-card>
 </template>
 <script>
@@ -286,6 +369,7 @@ export default {
     return {
       dialog: false,
       dialog1: false,
+      dialog2: false,
       item: {},
       pagination: {},
       items: [5, 10, 25, 50, 100],
@@ -321,6 +405,25 @@ export default {
           align: "start",
           class: "secondary white--text title",
         },
+
+        {
+          text: "الوقت",
+          value: "time",
+          align: "start",
+          class: "secondary white--text title",
+        },
+        {
+          text: "المندوب",
+          value: "name_representative",
+          align: "start",
+          class: "secondary white--text title",
+        },
+        {
+          text: "البم",
+          value: "bump",
+          align: "start",
+          class: "secondary white--text title",
+        },
         {
           text: "الخلفات",
           value: "man_buliding",
@@ -333,15 +436,10 @@ export default {
           align: "start",
           class: "secondary white--text title",
         },
+
         {
-          text: "البم",
-          value: "bump",
-          align: "start",
-          class: "secondary white--text title",
-        },
-        {
-          text: "المندوب",
-          value: "name_representative",
+          text: "التأريخ",
+          value: "date",
           align: "start",
           class: "secondary white--text title",
         },
@@ -364,15 +462,10 @@ export default {
           align: "start",
           class: "secondary white--text title",
         },
+
         {
-          text: "التأريخ",
-          value: "date",
-          align: "start",
-          class: "secondary white--text title",
-        },
-        {
-          text: "الوقت",
-          value: "time",
+          text: "وقت رفع الطلب",
+          value: "created_at",
           align: "start",
           class: "secondary white--text title",
         },
@@ -388,11 +481,17 @@ export default {
           align: "start",
           class: "secondary white--text title ",
         },
+        {
+          text: "أضف ملاحظة",
+          align: "start",
+          class: "secondary white--text title ",
+        },
       ],
       menu: null,
       currentLocale: "ar",
       date: "",
       type: "",
+      notes: "",
     };
   },
   computed: {
@@ -430,6 +529,24 @@ export default {
   },
 
   methods: {
+    addNote(item) {
+      this.item = item;
+      this.dialog2 = true;
+    },
+    sendNote() {
+      let data = {};
+      data["sale_category_id"] = this.item.id;
+      data["notes"] = this.notes;
+      console.log(data);
+      this.$store.dispatch("saleCategory/addNote", data);
+      this.item = {};
+      this.notes = "";
+      this.dialog2 = false;
+    },
+    goBump(item) {
+      console.log(item);
+      this.$store.dispatch("saleCategory/goBump", item.id);
+    },
     close() {
       this.dialog = false;
       this.type = "";
@@ -470,6 +587,7 @@ export default {
       this.$store.state.saleCategory.selected_object = {};
       this.$store.state.saleCategory.isEdit = false;
       this.$store.dispatch("saleCategory/getSalesCategories");
+      // this.getSalesCategories();
     },
     getItem(item) {
       this.dialog1 = true;
@@ -505,16 +623,23 @@ export default {
       let par = {
         ...pagination,
       };
-      // // console.log(this.query);
+      console.log(pagination);
       this.sales_categories_params = par;
       if (this.user_type != 4) {
-        console.log(this.user_type);
-        const current = new Date();
-        const moment = require("moment");
-        this.date = moment(current).format("YYYY-MM-DD");
-        var filter = { name: "date", value: this.date };
-        Object.assign(this.$store.state.saleCategory.filter, filter);
-        this.$store.dispatch("saleCategory/getSalesCategories");
+        console.log(pagination.page);
+
+        if (pagination.page != 1) {
+          this.$store.dispatch("saleCategory/getSalesCategories");
+        } else {
+          console.log(this.user_type);
+          const current = new Date();
+          const moment = require("moment");
+          this.date = moment(current).format("YYYY-MM-DD");
+          var filter = { name: "date", value: this.date };
+          Object.assign(this.$store.state.saleCategory.filter, filter);
+
+          this.$store.dispatch("saleCategory/getSalesCategories");
+        }
       } else {
         console.log(this.user_type);
 
@@ -540,16 +665,11 @@ export default {
     pagination: {
       handler() {
         this.getSalesCategories();
+        // this.$store.dispatch("saleCategory/getSalesCategories");
         this.sales_categories_params.page = 1;
       },
       deep: true,
     },
-    // date() {
-    //   const current = new Date();
-    //   const moment = require("moment");
-    //   this.date = moment(current).format("YYYY-MM-DD");
-    //   console.log(moment(current).format("YYYY-MM-DD"));
-    // },
   },
 };
 </script>

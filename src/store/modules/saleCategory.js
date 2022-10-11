@@ -14,9 +14,8 @@ const ExamModule = {
         saleCategoryQuery: "",
         pageCount: 1,
         params: {
-
             page: 1,
-            itemsPerPage: 10,
+            itemsPerPage: 50,
         },
     }),
     getters: {},
@@ -49,6 +48,12 @@ const ExamModule = {
             state.sela_category_state = "done";
             state.table_loading = false;
         },
+        add_note(state, sale_category) {
+            let index = state.sales_categories.findIndex((e) => e.id == sale_category.id);
+            Vue.set(state.sales_categories, index, sale_category);
+            state.sela_category_state = "done";
+            state.table_loading = false;
+        },
         sending_to_process(state, sale_category) {
             let index = state.sales_categories.findIndex((e) => e.id == sale_category.id);
             Vue.set(state.sales_categories, index, sale_category);
@@ -74,6 +79,13 @@ const ExamModule = {
             Vue.set(state.sales_categories, index, sale_category_paid);
             state.sela_category_state = "done";
             state.table_loading = false;
+        },
+        go_bump(state, sale_category) {
+            console.log(sale_category)
+            let index = state.sales_categories.findIndex((e) => e.id == sale_category.id);
+            Vue.set(state.sales_categories, index, sale_category);
+            state.sela_category_state = "done";
+            state.table_loading = false;
         }
 
 
@@ -88,7 +100,7 @@ const ExamModule = {
             state.table_loading = false;
             state.params = {
                 page: 1,
-                itemsPerPage: 10,
+                itemsPerPage: 50,
             };
         },
         async getSalesCategories({ commit, state, dispatch, rootState }) {
@@ -96,10 +108,12 @@ const ExamModule = {
             if (state.sela_category_state != "done") return -1;
             state.table_loading = true;
             let data = state.params;
-            console.log(rootState.user_type)
-            console.log(localStorage.getItem("user_type"));
+            console.log(data);
+            // console.log(rootState.user_type)
+            // console.log(localStorage.getItem("user_type"));
             let skip = (data.page - 1) * data.itemsPerPage;
             let limit = data.itemsPerPage;
+
             let query = "";
             var filterSaleCategory = "";
             var getProcesByUserType = [];
@@ -111,7 +125,7 @@ const ExamModule = {
             ) query = `&query=${state.saleCategoryQuery}`;
             if (Object.keys(state.filter).length != 0)
                 filterSaleCategory = "&filter=" + JSON.stringify(state.filter);
-            console.log(filterSaleCategory);
+            // console.log(filterSaleCategory);
             // اذا كان اليوزر ولا واحد من المكتوبين في الشرط يدخل للكوندشن 
             if (rootState.user_type != 0 && rootState.user_type != 4 && rootState.user_type != 5 && rootState.user_type != 6) {
                 // getProcesByUserType.push(rootState.user_type);
@@ -119,7 +133,7 @@ const ExamModule = {
                 if (rootState.user_type == 3) {
                     getProcesByUserType = ["1", "2", "3"];
                     filter_date = "&filter_date=" + state.filter_date
-                    console.log(filter_date)
+                    // console.log(filter_date)
                 } else {
                     getProcesByUserType.push(rootState.user_type);
                     getProcesByUserType.push("3");
@@ -131,15 +145,15 @@ const ExamModule = {
                 // type of process 
 
             }
-            console.log(typeof (JSON.stringify(getProcesByUserType)));
+            // console.log(typeof (JSON.stringify(getProcesByUserType)));
 
             var proces_type = '& proces_type[] =' + JSON.stringify(getProcesByUserType);
-            console.log(proces_type);
+            // console.log(proces_type);
 
 
 
             return new Promise((resolve, reject) => {
-                console.log(filter_date)
+                // console.log(filter_date)
 
                 axios({
                     url: `${rootState.server}` + "/api/get_sale" + "?skip=" + skip +
@@ -158,7 +172,7 @@ const ExamModule = {
                 }).catch((err) => {
                     state.table_loading = false;
                     reject(err);
-                    console.log(err)
+                    // console.log(err)
                     commit("sale_category_error");
                     dispatch(
                         "snackbarToggle",
@@ -343,6 +357,73 @@ const ExamModule = {
             });
         },
 
+        async goBump({ commit, state, dispatch, rootState }, data) {
+            state.table_loading = true
+            return new Promise((resolve, reject) => {
+                commit("sale_category_request");
+                axios({
+                    url: `${rootState.server}` + "/api/go_bump",
+                    data: { sale_category_id: data },
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    method: "PUT",
+                }).then(resp => {
+                    state.table_loading = false
+                    commit("go_bump", resp.data.result[0])
+                    dispatch(
+                        "snackbarToggle",
+                        { toggle: true, text: resp.data.message },
+                        { root: true }
+                    );
+                    resolve(resp);
+                }).catch((err) => {
+                    state.table_loading = false;
+                    commit("sale_category_error");
+                    dispatch(
+                        "snackbarToggle",
+                        { toggle: true, text: err.response.data.message },
+                        { root: true }
+                    );
+
+                    console.warn(err);
+                });
+            });
+        },
+
+        async addNote({ commit, state, dispatch, rootState }, data) {
+            state.table_loading = true
+            return new Promise((resolve, reject) => {
+                commit("sale_category_request");
+                axios({
+                    url: `${rootState.server}` + "/api/add_note",
+                    data: data,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    method: "PUT",
+                }).then(resp => {
+                    state.table_loading = false
+                    commit("add_note", resp.data.result[0])
+                    dispatch(
+                        "snackbarToggle",
+                        { toggle: true, text: resp.data.message },
+                        { root: true }
+                    );
+                    resolve(resp);
+                }).catch((err) => {
+                    state.table_loading = false;
+                    commit("sale_category_error");
+                    dispatch(
+                        "snackbarToggle",
+                        { toggle: true, text: err.response.data.message },
+                        { root: true }
+                    );
+
+                    console.warn(err);
+                });
+            });
+        },
         async deleteSaleCategory({ commit, state, dispatch, rootState }, data) {
             state.table_loading = true
             return new Promise((resolve) => {
@@ -377,6 +458,8 @@ const ExamModule = {
                 });
             });
         }
+
+
 
 
 

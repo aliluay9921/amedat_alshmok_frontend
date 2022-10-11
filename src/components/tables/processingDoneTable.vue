@@ -278,7 +278,7 @@
                 </v-col>
 
                 <v-col cols="auto">
-                  <v-btn secondary color="secondary" @click="doneInvoice">
+                  <v-btn secondary color="error" @click="doneInvoice">
                     انهاء الحساب
                   </v-btn>
                 </v-col>
@@ -306,6 +306,11 @@
     >
       <template v-slot:item="{ item }">
         <tr>
+          <td class="text-start">
+            <v-btn dark color="yellow" @click="done(item)"
+              >اكمال عملية التنفيذ</v-btn
+            >
+          </td>
           <td class="text-start" v-if="item.status == 0">
             <v-chip color="yellow">قيد المراجعة</v-chip>
           </td>
@@ -348,12 +353,6 @@
             <v-chip dark color="new">لايوجد ملاحظات</v-chip>
           </td>
           <td class="text-start" v-else>{{ item.notes }}</td>
-
-          <td class="text-start">
-            <v-btn dark color="yellow" @click="done(item)"
-              >اكمال عملية التنفيذ</v-btn
-            >
-          </td>
         </tr>
       </template>
       <template v-slot:top>
@@ -421,6 +420,11 @@ export default {
       },
       print_invoice: false,
       headers: [
+        {
+          text: "ترحيل",
+          align: "start",
+          class: "secondary white--text title",
+        },
         {
           text: "الحالة",
           value: "status",
@@ -516,12 +520,6 @@ export default {
         {
           text: "الملاحضات",
           value: "notes",
-          align: "start",
-          class: "secondary white--text title",
-        },
-
-        {
-          text: "ترحيل",
           align: "start",
           class: "secondary white--text title",
         },
@@ -776,10 +774,12 @@ export default {
       let invoice = this.invoicemnts.filter(
         (e) => e.sale_category_id == this.sale_category_id
       );
-      console.log(invoice.length);
-      this.invoicement_sequence = invoice.length;
+      // console.log(invoice.length);
+      // this.invoicement_sequence = invoice.length;
+      this.invoicement_sequence = item.SequenceInvoicment;
       this.invoicement_no = this.invoicemnts[0].countinvoicemnts;
-      console.log(this.invoicemnts.length);
+      // console.log(item.SequenceInvoicment);
+      // console.log(this.invoicemnts.length);
     },
 
     queryChange(val) {
