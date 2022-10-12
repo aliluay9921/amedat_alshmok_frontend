@@ -286,6 +286,16 @@
           <v-toolbar-title>جدول المبيعات المكتملة</v-toolbar-title>
 
           <v-divider class="mx-4" inset vertical></v-divider>
+          <v-btn color="success">
+            <export-excel
+              :data="salesCategories"
+              :fields="excel_sale_category"
+              class="btn btn-primary"
+              name="Amedat_alsmok.xls"
+            >
+              أستخراج الملفات الى الاكسل
+            </export-excel>
+          </v-btn>
           <v-spacer></v-spacer>
           <v-row style="margin-top: 15px">
             <v-col>
@@ -462,8 +472,59 @@ export default {
           class: "secondary white--text title",
         },
       ],
+      excel_sale_category: {
+        // الحالة: "status",
 
-      pagination: {},
+        الحالة: {
+          field: "status",
+          callback: () => {
+            return `نفذت `;
+          },
+        },
+        // التجهيز: "proces_type",
+        التجهيز: {
+          field: "proces_type",
+          callback: (value) => {
+            if (`${value}` == 1) {
+              return `معمل العامرية `;
+            } else if (`${value}` == 2) {
+              return `معمل الفروسية `;
+            } else {
+              return `معمل مشترك `;
+            }
+            // return `${value} `;
+          },
+        },
+        الموقع: "place",
+        الزبون: "name_customer",
+        النوع: "type",
+        الكمية: "quantity",
+        الخلفات: "man_buliding",
+        العمال: "workers",
+        البم: "bump",
+        المندوب: {
+          field: "representativ.full_name",
+          callback: (value) => {
+            return ` ${value}`;
+          },
+        },
+        // المندوب: "name_representative.full_name",
+        السعر: "price",
+        الكميةالفعلية: "actual_quantity",
+        تأريخ: "date",
+        الوقت: "time",
+        الملاحظات: "notes",
+      },
+      json_meta: [
+        [
+          {
+            key: "charset",
+            value: "utf-8",
+          },
+        ],
+      ],
+
+      pagination: { itemsPerPage: 50 },
       items: [5, 10, 25, 50, 100],
       menu: null,
       currentLocale: "ar",
@@ -541,6 +602,7 @@ export default {
       let pagination = this.pagination;
       let par = {
         ...pagination,
+        itemsPerPage: 50,
       };
       // // console.log(this.query);
       this.sales_categories_params = par;

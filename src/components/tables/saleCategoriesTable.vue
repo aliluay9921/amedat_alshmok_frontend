@@ -371,7 +371,7 @@ export default {
       dialog1: false,
       dialog2: false,
       item: {},
-      pagination: {},
+      pagination: { itemsPerPage: 50 },
       items: [5, 10, 25, 50, 100],
       headers: [
         {
@@ -620,14 +620,14 @@ export default {
 
     getSalesCategories() {
       let pagination = this.pagination;
+
       let par = {
         ...pagination,
+        itemsPerPage: 50,
       };
-      console.log(pagination);
+      // return;
       this.sales_categories_params = par;
       if (this.user_type != 4) {
-        console.log(pagination.page);
-
         if (pagination.page != 1) {
           this.$store.dispatch("saleCategory/getSalesCategories");
         } else {

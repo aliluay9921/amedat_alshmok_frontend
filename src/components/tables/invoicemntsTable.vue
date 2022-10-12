@@ -414,7 +414,7 @@ export default {
           class: "secondary white--text title",
         },
       ],
-      pagination: {},
+      pagination: { itemsPerPage: 50 },
       items: [5, 10, 25, 50, 100],
     };
   },
@@ -484,6 +484,7 @@ export default {
       console.log(pagination);
       let par = {
         ...pagination,
+        itemsPerPage: 50,
       };
       // // console.log(this.query);
       this.invoicemnt_params = par;

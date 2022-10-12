@@ -6,13 +6,15 @@ import vuetify from "./plugins/vuetify";
 import Axios from "axios";
 // import moment from 'moment';
 import moment from 'moment-timezone'
-
+import excel from 'vue-excel-export'
 import Print from 'vue-print-nb'
 import LottieAnimation from "lottie-vuejs/src/LottieAnimation.vue"; // import lottie-vuejs
 Vue.use(LottieAnimation); // add lottie-animation to your global scope
 
 Vue.use(Print);
 
+
+Vue.use(excel)
 
 const moment_locale = require('moment')
 require('moment/locale/ar')
