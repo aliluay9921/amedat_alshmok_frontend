@@ -70,8 +70,10 @@
       hide-default-footer
       loading-text="جاري التحميل يرجى الأنتظار"
     >
-      <template v-slot:item="{ item }">
+      <template v-slot:item="{ item, index }">
         <tr>
+          <td>{{ index + 1 }}</td>
+
           <td class="text-start">{{ item.car_number }}</td>
           <td class="text-start">{{ item.car_sequence }}</td>
           <td class="text-start">
@@ -125,6 +127,11 @@ export default {
       item: {},
 
       headers: [
+        {
+          text: "التسلسل",
+          align: "sequence",
+          class: "secondary white--text title",
+        },
         {
           text: "رقم السيارة",
           value: "car_number",

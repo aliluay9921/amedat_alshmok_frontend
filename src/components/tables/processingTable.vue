@@ -298,8 +298,9 @@
       hide-default-footer
       loading-text="جاري التحميل يرجى الأنتظار"
     >
-      <template v-slot:item="{ item }">
+      <template v-slot:item="{ item, index }">
         <tr>
+          <td>{{ index + 1 }}</td>
           <td class="text-start">
             <v-btn dark color="green" @click="done(item)">بدأ التنفيذ </v-btn>
           </td>
@@ -410,6 +411,11 @@ export default {
       print_invoice: false,
 
       headers: [
+        {
+          text: "التسلسل",
+          align: "sequence",
+          class: "secondary white--text title",
+        },
         {
           text: "ترحيل",
           align: "start",

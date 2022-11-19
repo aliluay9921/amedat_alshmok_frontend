@@ -5,6 +5,7 @@ const ExamModule = {
     namespaced: true,
     state: () => ({
         sales_categories: [],
+        sales_categories_represntive: [],
         sela_category_state: "done",
         table_loading: false,
         selected_object: {},
@@ -20,7 +21,6 @@ const ExamModule = {
     }),
     getters: {},
     mutations: {
-
         sale_category_success(state, sales_categories) {
             state.sales_categories.splice(0, state.sales_categories.length)
             sales_categories.forEach(element => {
@@ -29,10 +29,17 @@ const ExamModule = {
             state.sela_category_state = "done"
             state.table_loading = false
         },
+        sale_category_represntive_success(state, sales_categories_represntive) {
+            state.sales_categories_represntive.splice(0, state.sales_categories_represntive.length)
+            sales_categories_represntive.forEach(element => {
+                state.sales_categories_represntive.push(element)
+            });
+            state.sela_category_state = "done"
+            state.table_loading = false
+        },
         sale_category_request(state) {
             state.sela_category_state = "loading";
         },
-
         sale_category_error(state) {
             state.sela_category_state = "error";
         },
@@ -40,7 +47,6 @@ const ExamModule = {
             state.sales_categories.unshift(sale_category);
             state.sela_category_state = "done";
             state.table_loading = false;
-
         },
         sale_category_edit_success(state, sale_category) {
             let index = state.sales_categories.findIndex((e) => e.id == sale_category.id);
@@ -167,6 +173,57 @@ const ExamModule = {
                     state.pageCount = resp.data.count;
 
                     commit('sale_category_success', resp.data.result)
+                    dispatch("snackbarToggle", { toggle: true, text: resp.data.message }, { root: true });
+                    resolve(resp);
+                }).catch((err) => {
+                    state.table_loading = false;
+                    reject(err);
+                    // console.log(err)
+                    commit("sale_category_error");
+                    dispatch(
+                        "snackbarToggle",
+                        { toggle: true, text: err.response.data.message },
+                        { root: true }
+                    );
+
+                    console.warn(err);
+                });
+            })
+
+        },
+
+        async getSalesCategoriesRepresntive({ commit, state, dispatch, rootState }) {
+
+            if (state.sela_category_state != "done") return -1;
+            state.table_loading = true;
+            let data = state.params;
+            let skip = (data.page - 1) * data.itemsPerPage;
+            let limit = data.itemsPerPage;
+            let query = "";
+            var filterSaleCategory = "";
+            var getProcesByUserType = [];
+            var filter_date = "";
+            if (
+                state.saleCategoryQuery != undefined &&
+                state.saleCategoryQuery != null &&
+                state.saleCategoryQuery.length > 0
+            ) query = `&query=${state.saleCategoryQuery}`;
+            if (Object.keys(state.filter).length != 0)
+                filterSaleCategory = "&filter=" + JSON.stringify(state.filter);
+
+            return new Promise((resolve, reject) => {
+                // console.log(filter_date)
+                axios({
+                    url: `${rootState.server}` + "/api/get_sales_to_representatives" + "?skip=" + skip +
+                        "&limit=" +
+                        limit +
+                        query + filterSaleCategory + filter_date,
+                    method: "GET",
+                }).then(resp => {
+                    state.table_loading = false;
+                    state.pageCount = resp.data.count;
+
+                    commit('sale_category_represntive_success', resp.data.result)
                     dispatch("snackbarToggle", { toggle: true, text: resp.data.message }, { root: true });
                     resolve(resp);
                 }).catch((err) => {

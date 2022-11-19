@@ -212,7 +212,7 @@
       hide-default-footer
       loading-text="جاري التحميل يرجى الأنتظار"
     >
-      <template v-slot:item="{ item }">
+      <template v-slot:item="{ item, index }">
         <tr
           :style="
             item.paid == true && user_type == 3
@@ -220,6 +220,8 @@
               : ''
           "
         >
+          <td>{{ index + 1 }}</td>
+
           <td class="text-start" v-if="item.status == 0">
             <v-chip color="yellow">قيد المراجعة</v-chip>
           </td>
@@ -368,6 +370,11 @@ export default {
     return {
       search: "",
       headers: [
+        {
+          text: "التسلسل",
+          align: "sequence",
+          class: "secondary white--text title",
+        },
         {
           text: "الحالة",
           value: "status",
@@ -611,9 +618,11 @@ export default {
 
       const current = new Date();
       const moment = require("moment");
-      this.date = moment(current).format("YYYY-MM-DD");
-      this.$store.state.saleCategory.filter_date = this.date;
-      console.log(this.date);
+      if (this.date == "" || this.date == null) {
+        this.date = moment(current).format("YYYY-MM-DD");
+        this.$store.state.saleCategory.filter_date = this.date;
+        console.log(this.date);
+      }
       this.$store.dispatch("saleCategory/getSalesCategories");
     },
     searchDebounce() {

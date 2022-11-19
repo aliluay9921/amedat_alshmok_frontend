@@ -99,8 +99,10 @@
       hide-default-footer
       loading-text="جاري التحميل يرجى الأنتظار"
     >
-      <template v-slot:item="{ item }">
+      <template v-slot:item="{ item, index }">
         <tr @dblclick="selectedRaw(item)">
+          <td>{{ index + 1 }}</td>
+
           <td class="text-start">{{ item.full_name }}</td>
           <td class="text-start">{{ item.user_name }}</td>
 
@@ -167,6 +169,11 @@ export default {
       item: {},
 
       headers: [
+        {
+          text: "التسلسل",
+          align: "sequence",
+          class: "secondary white--text title",
+        },
         {
           text: "اسم المندوب",
           value: "full_name",

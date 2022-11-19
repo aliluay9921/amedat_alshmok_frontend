@@ -253,8 +253,10 @@
       hide-default-footer
       loading-text="جاري التحميل يرجى الأنتظار"
     >
-      <template v-slot:item="{ item }">
+      <template v-slot:item="{ item, index }">
         <tr>
+          <td>{{ index + 1 }}</td>
+
           <td class="text-start">{{ item.process.place }}</td>
           <td class="text-start">{{ item.process.date }}</td>
           <td class="text-start">{{ item.process.representativ.full_name }}</td>
@@ -317,6 +319,7 @@ export default {
       search: "",
       rules: [(value) => !!value || "هذا الحقل مطلوب."],
       driver_name: "",
+      // sequenc: 1,
       car_number: "",
       car_sequence: "",
       actual_quantity: "",
@@ -341,6 +344,11 @@ export default {
         extraHead: '<meta http-equiv="Content-Language"content="en-ar"/>',
       },
       headers: [
+        {
+          text: "التسلسل",
+          align: "sequence",
+          class: "secondary white--text title",
+        },
         {
           text: "الموقع",
           value: "place",

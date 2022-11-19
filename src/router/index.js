@@ -10,6 +10,7 @@ import doneSaleCategory from "../views/doneSaleCategory.vue";
 import representive from "../views/representive.vue";
 import driver from "../views/driver.vue";
 import car from "../views/car.vue";
+import saleCategoryRepresntive from "../views/saleCategoryRepresntive.vue";
 
 Vue.use(VueRouter);
 
@@ -74,6 +75,13 @@ const routes = [
     path: "/car",
     name: "car",
     component: car,
+    meta: {
+      requiresAuth: true,
+    },
+  }, {
+    path: "/saleCategoryRepresntive",
+    name: "saleCategoryRepresntive",
+    component: saleCategoryRepresntive,
     meta: {
       requiresAuth: true,
     },

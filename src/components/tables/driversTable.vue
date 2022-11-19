@@ -70,8 +70,10 @@
       hide-default-footer
       loading-text="جاري التحميل يرجى الأنتظار"
     >
-      <template v-slot:item="{ item }">
+      <template v-slot:item="{ item, index }">
         <tr>
+          <td>{{ index + 1 }}</td>
+
           <td class="text-start">{{ item.full_name }}</td>
           <td class="text-start">
             <v-btn dark color="error" @click="getItem(item)">حذف</v-btn>
@@ -125,6 +127,11 @@ export default {
       dialog: false,
 
       headers: [
+        {
+          text: "التسلسل",
+          align: "sequence",
+          class: "secondary white--text title",
+        },
         {
           text: "اسم السائق",
           value: "full_name",
