@@ -1,7 +1,7 @@
 import Vue from "vue";
 import axios from "axios";
 
-const ExamModule = {
+const saleCategory = {
     namespaced: true,
     state: () => ({
         sales_categories: [],
@@ -40,6 +40,8 @@ const ExamModule = {
         sale_category_request(state) {
             state.sela_category_state = "loading";
         },
+
+
         sale_category_error(state) {
             state.sela_category_state = "error";
         },
@@ -73,21 +75,21 @@ const ExamModule = {
             state.table_loading = false;
         },
         done_invoice_succsess(state, done_sale_category) {
-            console.log(done_sale_category)
+            // console.log(done_sale_category)
             let index = state.sales_categories.findIndex((e) => e.id == done_sale_category.id);
             Vue.set(state.sales_categories, index, done_sale_category);
             state.sela_category_state = "done";
             state.table_loading = false;
         },
         make_paid(state, sale_category_paid) {
-            console.log(sale_category_paid)
+            // console.log(sale_category_paid)
             let index = state.sales_categories.findIndex((e) => e.id == sale_category_paid.id);
             Vue.set(state.sales_categories, index, sale_category_paid);
             state.sela_category_state = "done";
             state.table_loading = false;
         },
         go_bump(state, sale_category) {
-            console.log(sale_category)
+            // console.log(sale_category)
             let index = state.sales_categories.findIndex((e) => e.id == sale_category.id);
             Vue.set(state.sales_categories, index, sale_category);
             state.sela_category_state = "done";
@@ -114,9 +116,8 @@ const ExamModule = {
             if (state.sela_category_state != "done") return -1;
             state.table_loading = true;
             let data = state.params;
-            console.log(data);
-            // console.log(rootState.user_type)
-            // console.log(localStorage.getItem("user_type"));
+            // console.log(data);
+
             let skip = (data.page - 1) * data.itemsPerPage;
             let limit = data.itemsPerPage;
 
@@ -191,7 +192,6 @@ const ExamModule = {
             })
 
         },
-
         async getSalesCategoriesRepresntive({ commit, state, dispatch, rootState }) {
 
             if (state.sela_category_state != "done") return -1;
@@ -242,7 +242,6 @@ const ExamModule = {
             })
 
         },
-
         async addSaleCategorie({ commit, state, dispatch, rootState }, data) {
             state.table_loading = true
             return new Promise((resolve) => {
@@ -352,10 +351,9 @@ const ExamModule = {
                 commit("sale_category_request");
                 axios({
                     url: `${rootState.server}` + "/api/done_invoice",
-                    data: { sale_category_id: data },
+                    data: data,
                     headers: {
                         "Content-Type": "application/json",
-
                     },
                     method: "PUT",
                 }).then(resp => {
@@ -528,4 +526,4 @@ const ExamModule = {
     }
 
 }
-export default ExamModule;
+export default saleCategory;

@@ -249,6 +249,12 @@
           <td class="text-start">{{ item.name_customer }}</td>
           <td class="text-start">{{ item.degree }}/{{ item.type }}</td>
           <td class="text-start">{{ item.quantity }}</td>
+          <td class="text-start" v-if="user_type == 3">
+            {{ item.final_quantity }}
+          </td>
+          <td class="text-center" v-else>
+            <v-chip dark color="orange">هذا العنصر خاص بالحسابات فقط</v-chip>
+          </td>
           <td class="text-start">{{ item.man_buliding }}</td>
           <td class="text-start">{{ item.workers }}</td>
           <td class="text-start">{{ item.bump }}</td>
@@ -413,6 +419,12 @@ export default {
           class: "secondary white--text title",
         },
         {
+          text: "كمية الاسمنت ",
+          value: "final_quantity",
+          align: "start",
+          class: "secondary white--text title",
+        },
+        {
           text: "الخلفات",
           value: "man_buliding",
           align: "start",
@@ -468,7 +480,7 @@ export default {
           class: "secondary white--text title",
         },
         {
-          text: "الملاحضات",
+          text: "الملاحظات",
           value: "notes",
           align: "start",
           class: "secondary white--text title",
@@ -505,7 +517,19 @@ export default {
         الموقع: "place",
         الزبون: "name_customer",
         النوع: "type",
+        الدرجة: "degree",
+
         الكمية: "quantity",
+        الكميةالنهائية: {
+          field: "final_quantity",
+          callback: (value) => {
+            if (this.user_type == 3) {
+              return ` ${value}`;
+            } else {
+              return `هذا العنصر خاص بالحسابات فقط`;
+            }
+          },
+        },
         الخلفات: "man_buliding",
         العمال: "workers",
         البم: "bump",

@@ -110,24 +110,12 @@
                             <label for="" color="primary"> اسم السائق</label>
                           </div>
                           <div class="data">
-                            <!-- <input
-                              type="text"
-                              style="text-align: center"
-                              v-model="driver_name"
-                            /> -->
-                            <!-- <v-combobox
-                              v-model="driver_name"
-                              :items="drivers"
-                              append-icon=""
-                              clear-icon="$clear"
-                            ></v-combobox> -->
                             <v-autocomplete
                               :items="drivers"
                               v-model="driver_name"
                               item-text="full_name"
                               item-value="full_name"
                               :menu-props="menu_props"
-                              append-icon=""
                             >
                             </v-autocomplete>
                           </div>
@@ -137,20 +125,12 @@
                             <label for=""> تسلسل السيارة</label>
                           </div>
                           <div class="data">
-                            <!-- <v-combobox
-                              v-model="car_sequence"
-                              :items="cars_sequence"
-                              append-icon=""
-                              @change="addCarNumber"
-                              clear-icon="$clear"
-                            ></v-combobox> -->
                             <v-autocomplete
                               :items="cars"
                               v-model="car_sequence"
                               item-text="car_sequence"
                               item-value="car_sequence"
                               :menu-props="menu_props_car"
-                              append-icon=""
                               @change="getCarNumber()"
                             >
                             </v-autocomplete>
@@ -514,7 +494,7 @@ export default {
           class: "secondary white--text title",
         },
         {
-          text: "الملاحضات",
+          text: "الملاحظات",
           value: "notes",
           align: "start",
           class: "secondary white--text title",
@@ -629,7 +609,6 @@ export default {
         closeOnContentClick: false,
         disableKeys: true,
         openOnClick: false,
-        maxHeight: 150,
         offsetY: true,
         offsetOverflow: true,
         transition: false,
@@ -832,8 +811,10 @@ export default {
   font-weight: bold;
   display: flex;
   flex-direction: row;
-  padding: 5px;
-  max-height: 50px;
+  padding: 7px;
+  /* 8 */
+  max-height: 55px;
+  /* 55 */
   width: 350px;
   text-align: center;
 }
@@ -847,17 +828,24 @@ export default {
   text-align: center;
   max-width: 175px;
   min-width: 175px;
+  max-height: 40px;
+  min-height: 40px;
   /* background-color: rgba(17, 56, 183, 0.372); */
 }
 .details .data {
   border: 1px solid black;
   font-weight: bold;
   border-radius: 5px;
-  padding: 5px;
+  padding: 5px !important;
   min-width: 300px !important;
+  max-width: 300px !important;
+  max-height: 40px !important;
+  min-height: 40px !important;
+  overflow: hidden !important;
 }
 .details .data :focus {
   outline: none;
+  overflow: hidden;
 }
 .numbers {
   font-size: 22px;
@@ -871,12 +859,14 @@ export default {
   font-family: 900 bold;
   padding-bottom: 100px;
 }
+
 .v-select.v-text-field:not(.v-text-field--single-line) input {
-  margin-top: -20px;
-  margin-bottom: 16px !important;
-  text-align: center;
-  /* overflow: hidden; */
-  /* outline: none; */
-  /* border: none; */
+  margin-top: -7px !important;
+  margin-bottom: 30px !important;
+  text-align: center !important;
+  font-size: 22px !important;
+  overflow: hidden !important;
+  outline: none !important;
+  border: none !important;
 }
 </style>

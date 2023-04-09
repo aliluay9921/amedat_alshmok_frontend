@@ -199,8 +199,8 @@
           <v-col cols="12" sm="3">
             <v-text-field
               v-model="selected_object.notes"
-              placeholder="الملاحضات"
-              label="الملاحضات"
+              placeholder="الملاحظات"
+              label="الملاحظات"
               hide-details="auto"
               clearable
             ></v-text-field>
@@ -308,6 +308,7 @@ export default {
         "k-400",
         "k-450",
         "k-500",
+        "C-00",
       ],
       ecment_type: ["عادي", "مقاوم", "فحص", "طيف"],
       radios: "",

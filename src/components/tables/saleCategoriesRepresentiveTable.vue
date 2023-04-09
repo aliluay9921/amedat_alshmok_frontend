@@ -277,7 +277,7 @@ export default {
           class: "secondary white--text title",
         },
         {
-          text: "الملاحضات",
+          text: "الملاحظات",
           value: "notes",
           align: "start",
           class: "secondary white--text title",

@@ -278,7 +278,7 @@
                 </v-col>
 
                 <v-col cols="auto">
-                  <v-btn secondary color="error" @click="doneInvoice">
+                  <v-btn secondary color="error" @click="dialog1 = true">
                     انهاء الحساب
                   </v-btn>
                 </v-col>
@@ -292,6 +292,58 @@
           </v-dialog>
         </v-row>
       </v-container>
+    </template>
+
+    <!-- open dailog to add final quantity  -->
+
+    <template>
+      <v-row justify="center">
+        <v-dialog v-model="dialog1" persistent max-width="390">
+          <v-card>
+            <v-card-title class="text-h5 secondary white--text">
+              قم بكتابة الكمية النهائية للصبة
+            </v-card-title>
+            <v-card-text class="mt-5 text-h5 dark--text">
+              <v-form ref="form">
+                <v-col cols="12" md="12" lg="12">
+                  <v-row>
+                    <v-col>
+                      <v-text-field
+                        v-model="final_quantity"
+                        placeholder="الكمية النهائية للصبة "
+                        label="الكمية النهائية للصبة "
+                        hide-details="auto"
+                        :rules="[rules.required]"
+                        clearable
+                      >
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="dialog1 = false"
+              >
+                غلق
+              </v-btn>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="doneInvoice"
+              >
+                تأكيد
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
     </template>
 
     <v-data-table
@@ -415,6 +467,8 @@ export default {
       employee: "",
       name_customer: "",
       dialog: false,
+      dialog1: false,
+      final_quantity: "",
       printObj: {
         id: "print_me",
         popTitle: "طباعة سند قبض/صرف",
@@ -525,7 +579,7 @@ export default {
           class: "secondary white--text title",
         },
         {
-          text: "الملاحضات",
+          text: "الملاحظات",
           value: "notes",
           align: "start",
           class: "secondary white--text title",
@@ -645,6 +699,10 @@ export default {
         offsetOverflow: true,
         transition: false,
       },
+      rules: {
+        required: (value) => !!value || "هذا الحقل مطلوب.",
+        // min: (v) => v.length >= 6 || "يجب ان تكون كلمة المرور اكثر من 6 عناصر",
+      },
     };
   },
   computed: {
@@ -709,12 +767,19 @@ export default {
       this.car_sequence = "";
       // location.reload();
     },
+
     doneInvoice() {
-      console.log(this.sale_category_id);
-      this.$store.dispatch("saleCategory/doneInvoice", this.sale_category_id);
-      this.close();
-      this.$store.dispatch("saleCategory/resetFields");
-      this.$store.dispatch("saleCategory/getSalesCategories");
+      if (this.$refs.form.validate()) {
+        let data = {};
+        data["sale_category_id"] = this.sale_category_id;
+        data["final_quantity"] = this.final_quantity;
+        console.log(data);
+        // return;
+        this.$store.dispatch("saleCategory/doneInvoice", data);
+        this.close();
+        this.$store.dispatch("saleCategory/resetFields");
+        this.$store.dispatch("saleCategory/getSalesCategories");
+      }
     },
 
     // addCarNumber() {
@@ -893,8 +958,8 @@ export default {
   padding-bottom: 100px;
 }
 .v-select.v-text-field:not(.v-text-field--single-line) input {
-  margin-top: -20px;
-  margin-bottom: 16px !important;
+  margin-top: -7px !important;
+  margin-bottom: 23px !important;
   text-align: center;
   /* overflow: hidden; */
   /* outline: none; */

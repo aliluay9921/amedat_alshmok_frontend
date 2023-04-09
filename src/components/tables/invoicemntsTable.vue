@@ -254,7 +254,7 @@
       loading-text="جاري التحميل يرجى الأنتظار"
     >
       <template v-slot:item="{ item, index }">
-        <tr>
+        <tr :style="item.quantity_car > 13 ? 'background-color:#EB455F' : ''">
           <td>{{ index + 1 }}</td>
 
           <td class="text-start">{{ item.process.place }}</td>
@@ -265,10 +265,16 @@
           <td class="text-start">{{ item.driver_name }}</td>
           <td class="text-start">{{ item.car_number }}</td>
           <td class="text-start">{{ item.car_sequence }}</td>
-          <td class="text-start">{{ item.quantity_car }}</td>
+          <td class="text-start">
+            {{ item.quantity_car }}
+          </td>
           <td class="text-start">{{ item.invoice_no }}</td>
           <td class="text-start">{{ item.sequence }}</td>
           <td class="text-start">{{ item.employee.full_name }}</td>
+          <td class="text-start">
+            {{ item.created_at | moment("DD.MM.YYYY, h:mm A") }}
+            <!-- <span>{{ moment(item.created_at).format("YYYY-MM-DD") }}</span> -->
+          </td>
           <td class="text-start">
             <v-btn dark color="green" @click="done(item)">طباعة</v-btn>
           </td>
@@ -279,6 +285,16 @@
           <v-toolbar-title>جدول المبيعات</v-toolbar-title>
 
           <v-divider class="mx-4" inset vertical></v-divider>
+          <v-btn color="success">
+            <export-excel
+              :data="invoicemnts"
+              :fields="excel_invoicemnts"
+              class="btn btn-primary"
+              name="Amedat_alsmok.xls"
+            >
+              أستخراج الملفات الى الاكسل
+            </export-excel>
+          </v-btn>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="invoicemntQuery"
@@ -415,6 +431,12 @@ export default {
           align: "start",
           class: "secondary white--text title",
         },
+        {
+          text: "تأريخ الطباعة",
+          value: "created_at",
+          align: "start",
+          class: "secondary white--text title",
+        },
 
         {
           text: "العمليات",
@@ -424,6 +446,36 @@ export default {
       ],
       pagination: { itemsPerPage: 50 },
       items: [5, 10, 25, 50, 100],
+
+      excel_invoicemnts: {
+        // الحالة: "status",
+
+        الموقع: "process.place",
+        التاريخ: "process.date",
+        المندوب: {
+          field: "process.representativ.full_name",
+          callback: (value) => {
+            return ` ${value}`;
+          },
+        },
+        الزبون: "process.name_customer",
+
+        السائق: "driver_name",
+        " رقم السيارة": "car_number",
+        " تسلسل السيارة": "car_sequence",
+        ألكمية: "quantity_car",
+        "رقم الفاتورة": "invoice_no",
+        "تسلسل الفاتورة": "sequence",
+        المجهز: "employee.full_name",
+      },
+      json_meta: [
+        [
+          {
+            key: "charset",
+            value: "utf-8",
+          },
+        ],
+      ],
     };
   },
   computed: {
