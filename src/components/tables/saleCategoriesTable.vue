@@ -163,14 +163,14 @@
               color="warning"
               >لم ترحل بعد</v-btn
             >
-            <v-btn
+            <!-- <v-btn
               v-if="user_type != 5"
               style="margin-left: 5px; margin-top: 5px"
               dark
               color="red"
               @click="getItem(item)"
               >حذف
-            </v-btn>
+            </v-btn> -->
           </td>
           <td class="text-start" v-else-if="item.status == 1">
             <v-btn dark color="green">تم الترحيل الى المعمل </v-btn>
@@ -216,7 +216,7 @@
 
     <!-- delete item  -->
 
-    <template>
+    <!-- <template>
       <v-row justify="center">
         <v-dialog v-model="dialog1" persistent max-width="390">
           <v-card>
@@ -248,7 +248,7 @@
           </v-card>
         </v-dialog>
       </v-row>
-    </template>
+    </template> -->
     <!-- check proces type before sending to proces اختيار المعمل قبل الترحيل -->
     <template>
       <v-row justify="center">

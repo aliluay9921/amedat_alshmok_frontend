@@ -8,14 +8,15 @@ import invoicement from '../store/modules/invoicement'
 import representive from '../store/modules/representive'
 import driver from '../store/modules/driver'
 import car from '../store/modules/car'
+import user from '../store/modules/user'
 
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    server: "http://138.68.113.224:8888",
-    // server: "http://127.0.0.1:8000",
+    // server: "http://138.68.113.224:8888",
+    server: "http://127.0.0.1:8000",
     snackbar: false,
     textSnackbar: "",
     isLoggedIn: false,
@@ -27,7 +28,6 @@ export default new Vuex.Store({
   },
   getters: {
     isLoggedIn: (state) => !!state.token,
-
   },
   mutations: {
     auth_success(state, token) {
@@ -111,6 +111,6 @@ export default new Vuex.Store({
 
   },
   modules: {
-    saleCategory, invoicement, representive, driver, car
+    saleCategory, invoicement, representive, driver, car, user
   },
 });
