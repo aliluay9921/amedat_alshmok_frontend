@@ -452,6 +452,16 @@ export default {
 
         الموقع: "process.place",
         التاريخ: "process.date",
+        "تأريخ الطباعة": {
+          field: "created_at",
+          callback: (value) => {
+            {
+              {
+                return value;
+              }
+            }
+          },
+        },
         المندوب: {
           field: "process.representativ.full_name",
           callback: (value) => {

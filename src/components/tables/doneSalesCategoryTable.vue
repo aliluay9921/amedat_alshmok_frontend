@@ -53,6 +53,28 @@
                         <div style="text-align: center">
                           <p><b>الفاتورة النهائية</b></p>
                         </div>
+                        <div>
+                          <p
+                            style="
+                              margin: 0 auto;
+                              padding: 10px;
+                              text-align: right;
+                            "
+                          >
+                            <span style="padding-left: 70px"
+                              ><b
+                                >تأريخ الصبة :
+                                {{ date }}
+                              </b></span
+                            >
+
+                            <!-- <span style="padding-left: 35px">
+                              <b
+                                >الوقت : {{ new Date() | moment(" h:mm:ss A") }}
+                              </b>
+                            </span> -->
+                          </p>
+                        </div>
                       </v-col>
                     </v-row>
                     <v-row dir="rtl">
@@ -251,6 +273,8 @@
           <td class="text-start">{{ item.place }}</td>
           <td class="text-start">{{ item.name_customer }}</td>
           <td class="text-start">{{ item.degree }}/{{ item.type }}</td>
+          <td class="text-start">{{ item.Type_pouring }}</td>
+          <td class="text-start">{{ item.workers_group }}</td>
           <td class="text-start">{{ item.quantity }}</td>
           <td class="text-start" v-if="user_type == 3">
             {{ item.final_quantity }}
@@ -416,6 +440,18 @@ export default {
           class: "secondary white--text title",
         },
         {
+          text: "نوع الصبة",
+          value: "Type_pouring",
+          align: "start",
+          class: "secondary white--text title",
+        },
+        {
+          text: "مجموعة العمال ",
+          value: "workers_group",
+          align: "start",
+          class: "secondary white--text title",
+        },
+        {
           text: "الكمية",
           value: "quantity",
           align: "start",
@@ -520,6 +556,8 @@ export default {
         الموقع: "place",
         الزبون: "name_customer",
         النوع: "type",
+        "نوع الصبة": "Type_pouring",
+        مجموعةالعمال: "workers_group",
         الدرجة: "degree",
 
         الكمية: "quantity",

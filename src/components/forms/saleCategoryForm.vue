@@ -44,12 +44,11 @@
           </v-col>
           <v-col cols="12" sm="2">
             <v-text-field
-              v-model="selected_object.quantity"
-              placeholder="الكمية بالمتر المكعب"
-              label="الكمية بالمتر المكعب"
+              v-model="selected_object.Type_pouring"
+              placeholder="نوعية الصبة"
+              label="نوعية الصبة"
               hide-details="auto"
-              :rules="rules"
-              hint="الكمية بالمتر المكعب"
+              hint="نوعية الصبة"
               clearable
             ></v-text-field>
           </v-col>
@@ -207,6 +206,39 @@
           </v-col>
         </v-row>
         <v-row>
+          <v-col cols="12" sm="2">
+            <v-text-field
+              v-model="selected_object.quantity"
+              placeholder="الكمية بالمتر المكعب"
+              label="الكمية بالمتر المكعب"
+              hide-details="auto"
+              :rules="rules"
+              hint="الكمية بالمتر المكعب"
+              clearable
+            ></v-text-field>
+          </v-col>
+          <!-- <v-col cols="12" sm="2">
+            <v-text-field
+              v-model="selected_object.workers_group"
+              placeholder="مجموعة العمال"
+              label="مجموعة العمال"
+              hide-details="auto"
+              hint="مجموعة العمال"
+              clearable
+            ></v-text-field>
+          </v-col> -->
+          <v-col cols="12" sm="4">
+            <v-select
+              :items="workers_group_name"
+              label="مجموعة العمال"
+              v-model="selected_object.workers_group"
+              hide-details="auto"
+              :rules="rules"
+              clearable
+            ></v-select>
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="12" align-self="center" class="text-center">
             <v-row justify="center">
               <v-col cols="auto">
@@ -300,6 +332,7 @@ export default {
         "C-40",
         "C-45",
         "C-50",
+        "C-55",
         "C-60",
         "C-65",
         "C-70",
@@ -312,6 +345,12 @@ export default {
         "k-450",
         "k-500",
         "C-00",
+      ],
+      workers_group_name: [
+        "مجموعة عمر",
+        "مجموعة بارق",
+        "مجموعة محمد يوسف ",
+        "مجموعة سعد نايف",
       ],
       ecment_type: ["عادي", "مقاوم", "فحص", "طيف"],
       radios: "",
@@ -328,8 +367,10 @@ export default {
       name_representative: "",
       phone_number: "",
       price: "",
+      Type_pouring: "",
       actual_quantity: "",
       notes: "",
+
       currentLocale: "ar",
       representive_id: "",
       menu_props: {
@@ -398,7 +439,8 @@ export default {
         data["price"] = this.selected_object.price;
         data["actual_quantity"] = this.selected_object.actual_quantity;
         data["notes"] = this.selected_object.notes;
-        // this.ecment_degree
+        data["Type_pouring"] = this.selected_object.Type_pouring;
+        data["workers_group"] = this.selected_object.workers_group;
 
         if (this.isEdit) {
           data["sale_category_id"] = this.selected_object.id;

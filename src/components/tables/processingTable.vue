@@ -308,6 +308,8 @@
           <td class="text-start">{{ item.place }}</td>
           <td class="text-start">{{ item.name_customer }}</td>
           <td class="text-start">{{ item.degree }}/{{ item.type }}</td>
+          <td class="text-start">{{ item.Type_pouring }}</td>
+          <td class="text-start">{{ item.workers_group }}</td>
           <td class="text-start">{{ item.quantity }}</td>
           <td class="text-start">{{ item.man_buliding }}</td>
           <td class="text-start">{{ item.workers }}</td>
@@ -429,6 +431,18 @@ export default {
         {
           text: "النوع",
           value: "type",
+          align: "start",
+          class: "secondary white--text title",
+        },
+        {
+          text: "نوع الصبة",
+          value: "Type_pouring",
+          align: "start",
+          class: "secondary white--text title",
+        },
+        {
+          text: "مجموعة العمال ",
+          value: "workers_group",
           align: "start",
           class: "secondary white--text title",
         },
