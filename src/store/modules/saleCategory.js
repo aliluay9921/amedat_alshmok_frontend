@@ -74,6 +74,13 @@ const saleCategory = {
             state.sela_category_state = "done";
             state.table_loading = false;
         },
+        // حذف جديد يوسف
+        delete_manager_sale_category(state, sale_category) {
+            let index = state.sales_categories.findIndex((e) => e.id == sale_category.id);
+            state.sales_categories.splice(index, 1)
+            state.sela_category_state = "done";
+            state.table_loading = false;
+        },
         done_invoice_succsess(state, done_sale_category) {
             // console.log(done_sale_category)
             let index = state.sales_categories.findIndex((e) => e.id == done_sale_category.id);
@@ -494,6 +501,41 @@ const saleCategory = {
                     state.table_loading = false;
                     // console.log(resp)
                     commit("delete_sale_category", data);
+                    dispatch(
+                        "snackbarToggle",
+                        { toggle: true, text: resp.data.message },
+                        { root: true }
+                    );
+                    resolve(resp);
+                }).catch((err) => {
+                    state.table_loading = false;
+                    commit("sale_category_error");
+                    dispatch(
+                        "snackbarToggle",
+                        { toggle: true, text: err.response.data.message },
+                        { root: true }
+                    );
+
+                    console.warn(err);
+                });
+            });
+        },
+        //  حذف جديد يوسف
+        async deleteNewAdminSale({ commit, state, dispatch, rootState }, data) {
+            state.table_loading = true
+            return new Promise((resolve) => {
+                commit("sale_category_request");
+                axios({
+                    url: `${rootState.server}` + "/api/delete_manager_sale_category",
+                    data: { sale_category_id: data.id },
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    method: "delete",
+                }).then(resp => {
+                    state.table_loading = false;
+                    // console.log(resp)
+                    commit("delete_manager_sale_category", data);
                     dispatch(
                         "snackbarToggle",
                         { toggle: true, text: resp.data.message },

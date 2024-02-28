@@ -185,6 +185,17 @@
           </td>
           <td>
             <v-btn
+              v-if="user_type == 6"
+              style="margin-left: 5px; margin-top: 5px"
+              dark
+              color="red"
+              @click="deleteNewAdminSale(item)"
+              >حذف
+            </v-btn>
+          </td>
+
+          <td>
+            <v-btn
               v-if="user_type == 0"
               :disabled="user_type == 0 ? false : true"
               style="margin-left: 5px; margin-top: 5px"
@@ -251,6 +262,41 @@
         </v-dialog>
       </v-row>
     </template> -->
+
+    <template>
+      <v-row justify="center">
+        <v-dialog v-model="dialog5" persistent max-width="390">
+          <v-card>
+            <v-card-title class="text-h5 secondary white--text">
+              حذف الصبة
+            </v-card-title>
+            <v-card-text class="mt-5 text-h5 dark--text"
+              ><b> هل أنت متأكد من عملية الحذف </b></v-card-text
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="dialog5 = false"
+              >
+                غلق
+              </v-btn>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="deleteNewAdmin()"
+              >
+                تأكيد الحذف
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
+    -->
     <!-- check proces type before sending to proces اختيار المعمل قبل الترحيل -->
     <template>
       <v-row justify="center">
@@ -374,6 +420,7 @@ export default {
       dialog: false,
       dialog1: false,
       dialog2: false,
+      dialog5: false,
       item: {},
       pagination: { itemsPerPage: 50 },
       items: [5, 10, 25, 50, 100],
@@ -504,6 +551,11 @@ export default {
           class: "secondary white--text title ",
         },
         {
+          text: "حذف جديد",
+          align: "start",
+          class: "secondary white--text title ",
+        },
+        {
           text: "أضف ملاحظة",
           align: "start",
           class: "secondary white--text title ",
@@ -615,6 +667,23 @@ export default {
       this.dialog1 = true;
       this.item = item;
     },
+
+    // حذف جديد يوسف
+    deleteNewAdminSale(item) {
+      console.log(item);
+      this.dialog5 = true;
+      this.item = item;
+    },
+
+    deleteNewAdmin() {
+      console.log(this.item);
+      console.log("here");
+
+      this.$store.dispatch("saleCategory/deleteNewAdminSale", this.item);
+      this.dialog5 = false;
+      this.item = {};
+    },
+
     deleteSaleCategory() {
       console.log(this.item);
       this.$store.dispatch("saleCategory/deleteSaleCategory", this.item);
