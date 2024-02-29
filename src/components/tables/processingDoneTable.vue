@@ -863,7 +863,9 @@ export default {
       // console.log(invoice.length);
       // this.invoicement_sequence = invoice.length;
       this.invoicement_sequence = item.SequenceInvoicment;
-      this.invoicement_no = this.invoicemnts[0].countinvoicemnts;
+      // this.invoicement_no = this.invoicemnts[0].countinvoicemnts;
+      this.invoicement_no = this.invoicemnts[0].countinvoicemnts.invoice_no; // تحويل عملية الفواتير
+
       // console.log(item.SequenceInvoicment);
       // console.log(this.invoicemnts.length);
     },

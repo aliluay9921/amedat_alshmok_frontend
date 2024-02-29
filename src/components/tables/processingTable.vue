@@ -750,8 +750,9 @@ export default {
       // this.invoicement_sequence = invoice.length;
       this.invoicement_sequence = item.SequenceInvoicment;
 
-      this.invoicement_no = this.invoicemnts[0].countinvoicemnts;
-      // console.log(invoice[0].countinvoicemnts);
+      this.invoicement_no = this.invoicemnts[0].countinvoicemnts.invoice_no;
+      console.log(this.invoicemnts[0].countinvoicemnts.invoice_no);
+
       // this.$store.dispatch("saleCategory/sendingToProcessing", item);
     },
 
