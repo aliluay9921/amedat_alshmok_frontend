@@ -91,6 +91,12 @@
             <v-chip dark color="green" v-else-if="item.proces_type == 2"
               >تم ألترحيل الى معمل الفروسية
             </v-chip>
+            <v-chip dark color="green" v-else-if="item.proces_type == 7">
+              تم ألترحيل الى معمل الفروسية 2
+            </v-chip>
+            <v-chip dark color="green" v-else-if="item.proces_type == 8">
+              تم ألترحيل الى معمل العامرية2-مطار
+            </v-chip>
             <v-chip dark color="green" v-else>ترحيل مشترك</v-chip>
           </td>
           <td class="text-start" v-else-if="item.status == 2">
@@ -329,6 +335,29 @@
                     rounded
                     >معمل الفروسية</v-btn
                   >
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <v-btn
+                    v-bind:class="type === 7 ? 'success' : 'error'"
+                    color="white"
+                    elevation="5"
+                    @click="select_procsess((type = 7))"
+                    outlined
+                    rounded
+                    >معمل الفروسية 2</v-btn
+                  >
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <v-btn
+                    v-bind:class="type === 8 ? 'success' : 'error'"
+                    color="white"
+                    elevation="5"
+                    @click="select_procsess((type = 8))"
+                    outlined
+                    rounded
+                  >
+                    معمل العامرية2-مطار
+                  </v-btn>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <v-btn

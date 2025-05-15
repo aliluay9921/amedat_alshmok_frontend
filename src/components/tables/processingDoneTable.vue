@@ -110,17 +110,6 @@
                             <label for="" color="primary"> اسم السائق</label>
                           </div>
                           <div class="data">
-                            <!-- <input
-                              type="text"
-                              style="text-align: center"
-                              v-model="driver_name"
-                            /> -->
-                            <!-- <v-combobox
-                              v-model="driver_name"
-                              :items="drivers"
-                              append-icon=""
-                              clear-icon="$clear"
-                            ></v-combobox> -->
                             <v-autocomplete
                               :items="drivers"
                               v-model="driver_name"
@@ -384,6 +373,12 @@
           </td>
           <td class="text-start" v-else-if="item.proces_type == 2">
             <v-chip dark color="primary"> معمل الفروسية </v-chip>
+          </td>
+          <td class="text-start" v-else-if="item.proces_type == 7">
+            <v-chip dark color="primary"> معمل الفروسية 2</v-chip>
+          </td>
+          <td class="text-start" v-else-if="item.proces_type == 8">
+            <v-chip dark color="primary">معمل العامرية2 -مطار </v-chip>
           </td>
 
           <td class="text-start" v-else-if="item.proces_type == 3">

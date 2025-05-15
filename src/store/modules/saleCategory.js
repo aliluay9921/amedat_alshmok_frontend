@@ -145,7 +145,7 @@ const saleCategory = {
                 // getProcesByUserType.push(rootState.user_type);
                 // getProcesByUserType.push("3");
                 if (rootState.user_type == 3) {
-                    getProcesByUserType = ["1", "2", "3"];
+                    getProcesByUserType = ["1", "2", "3", "7", "8"];
                     filter_date = "&filter_date=" + state.filter_date
                     // console.log(filter_date)
                 } else {
@@ -155,7 +155,7 @@ const saleCategory = {
 
 
             } else {
-                getProcesByUserType = ["0", "1", "2", "3"];
+                getProcesByUserType = ["0", "1", "2", "3", "7", "8"];
                 // type of process 
 
             }

@@ -106,7 +106,12 @@ export default {
               user_type == 6
             ) {
               this.$router.replace("/");
-            } else if (user_type == 1 || user_type == 2) {
+            } else if (
+              user_type == 1 ||
+              user_type == 2 ||
+              user_type == 7 ||
+              user_type == 8
+            ) {
               this.$router.replace("/processing");
             } else if (user_type == 3) {
               this.$router.replace("/doneSaleCategory");

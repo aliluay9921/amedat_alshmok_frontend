@@ -15,6 +15,7 @@
           <v-col cols="12" sm="2">
             <v-btn dark color="primary" to="/users">المستخدمين</v-btn>
           </v-col>
+
           <v-col cols="12" sm="2">
             <v-btn dark color="primary" to="/doneSaleCategory"
               >المبيعات المكتملة</v-btn

@@ -217,16 +217,28 @@
               clearable
             ></v-text-field>
           </v-col>
-          <!-- <v-col cols="12" sm="2">
+          <v-col cols="12" sm="2" v-if="user_type == 6">
             <v-text-field
-              v-model="selected_object.workers_group"
-              placeholder="مجموعة العمال"
-              label="مجموعة العمال"
+              v-model="selected_object.final_quantity"
+              placeholder="الكمية النهائية"
+              label=" اسمنت الكمية النهائية"
               hide-details="auto"
-              hint="مجموعة العمال"
+              :rules="rules"
+              hint="الكمية النهائية"
               clearable
             ></v-text-field>
-          </v-col> -->
+          </v-col>
+          <v-col cols="12" sm="2" v-if="user_type == 6">
+            <v-text-field
+              v-model="selected_object.actual_quantity"
+              placeholder="الكمية الفعلية"
+              label="الكمية الفعلية"
+              hide-details="auto"
+              :rules="rules"
+              hint="الكمية الفعلية"
+              clearable
+            ></v-text-field>
+          </v-col>
           <v-col cols="12" sm="4">
             <v-select
               :items="workers_group_name"
@@ -428,6 +440,8 @@ export default {
         data["type"] = this.selected_object.type;
         data["degree"] = this.selected_object.degree;
         data["quantity"] = this.selected_object.quantity;
+        data["final_quantity"] = this.selected_object.final_quantity;
+        data["actual_quantity"] = this.selected_object.actual_quantity;
         data["man_buliding"] = this.selected_object.man_buliding;
         data["workers"] = this.selected_object.workers;
         data["bump"] = this.selected_object.bump;
@@ -441,7 +455,7 @@ export default {
         data["notes"] = this.selected_object.notes;
         data["Type_pouring"] = this.selected_object.Type_pouring;
         data["workers_group"] = this.selected_object.workers_group;
-
+        console.log(data);
         if (this.isEdit) {
           data["sale_category_id"] = this.selected_object.id;
           this.editData(data);

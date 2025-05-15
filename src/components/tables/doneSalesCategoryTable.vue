@@ -1,5 +1,166 @@
 <template>
   <v-card class="elevation-1">
+    <!-- dilog to search on invocemnt and driver -->
+
+    <template>
+      <v-row justify="center">
+        <v-dialog v-model="dialogSearch" persistent max-width="1000">
+          <v-card>
+            <v-card-title class="text-h5 secondary white--text">
+              البحث في الوصولات
+            </v-card-title>
+            <v-card-text class="mt-5 text-h5 dark--text"
+              ><b>ابحث عن طريق ادخال اسم السائق والتاريخ </b>
+              <v-form>
+                <v-row style="margin-top: 35px">
+                  <v-col cols="2">
+                    <div style="margin-top: 30px">
+                      <span>اسم السائق</span>
+                    </div>
+                  </v-col>
+                  <v-col justify="center" cols="3">
+                    <div>
+                      <v-autocomplete
+                        :items="drivers"
+                        v-model="driver_name"
+                        item-text="full_name"
+                        item-value="full_name"
+                        :menu-props="menu_props"
+                        append-icon=""
+                      >
+                      </v-autocomplete>
+                    </div>
+                  </v-col>
+                  <v-col cols="2">
+                    <div style="margin-top: 30px">
+                      <span>التأريخ:</span>
+                    </div>
+                  </v-col>
+                  <v-col cols="2" style="margin-top: 20px">
+                    <v-menu
+                      v-model="menu1"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          clearable
+                          v-model="start_time"
+                          label="من تأريخ"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          :attrs-name="months_picker"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="start_time"
+                        @input="menu1 = false"
+                        :locale="currentLocale"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+                  <v-col cols="2" style="margin-top: 20px">
+                    <v-menu
+                      v-model="menu2"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          clearable
+                          v-model="end_time"
+                          label="الى تأريخ"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          :attrs-name="months_picker"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="end_time"
+                        @input="menu2 = false"
+                        :locale="currentLocale"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+                </v-row>
+              </v-form>
+
+              <v-row>
+                <v-col>
+                  <template>
+                    <v-data-table
+                      :headers="headers_search_table"
+                      :items="searchDriverInvoicments"
+                      :items-per-page="5"
+                      class="elevation-1"
+                    >
+                      <template v-slot:item="{ item, index }">
+                        <tr>
+                          <td>{{ index + 1 }}</td>
+                          <td class="text-start">{{ item.invoice_no }}</td>
+                          <td class="text-start">
+                            {{ item.process.name_customer }}
+                          </td>
+                          <td class="text-start">
+                            {{ item.process.representativ.full_name }}
+                          </td>
+
+                          <td class="text-start">{{ item.process.place }}</td>
+
+                          <td class="text-start">{{ item.car_number }}</td>
+                          <td class="text-start">{{ item.car_sequence }}</td>
+
+                          <td class="text-start">{{ item.sequence }}</td>
+                          <td class="text-start">{{ item.process.degree }}</td>
+
+                          <td class="text-start">
+                            {{ item.quantity_car }}
+                          </td>
+                          <td class="text-start">
+                            {{ item.created_at | moment("DD.MM.YYYY, h:mm A") }}
+                            <!-- <span>{{ moment(item.created_at).format("YYYY-MM-DD") }}</span> -->
+                          </td>
+                        </tr>
+                      </template>
+                    </v-data-table>
+                  </template>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="close"
+              >
+                غلق
+              </v-btn>
+              <v-btn
+                class="secondary"
+                color="white darken-1"
+                text
+                @click="searchDriver()"
+              >
+                تأكيد البحث
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
+    </template>
+
     <!-- dilog to done and print invoice -->
 
     <template>
@@ -195,6 +356,9 @@
             <v-btn dark color="primary" to="/users">المستخدمين</v-btn>
           </v-col>
           <v-col cols="12" sm="2">
+            <v-btn dark color="primary" @click="getItem">فواتير</v-btn>
+          </v-col>
+          <v-col cols="12" sm="2">
             <v-btn dark color="primary" to="/doneSaleCategory"
               >المبيعات المكتملة</v-btn
             >
@@ -265,6 +429,12 @@
           </td>
           <td class="text-start" v-else-if="item.proces_type == 2">
             <v-chip dark color="primary"> معمل الفروسية </v-chip>
+          </td>
+          <td class="text-start" v-else-if="item.proces_type == 7">
+            <v-chip dark color="primary"> معمل الفروسية 2</v-chip>
+          </td>
+          <td class="text-start" v-else-if="item.proces_type == 8">
+            <v-chip dark color="primary">معمل العامرية2 -مطار </v-chip>
           </td>
 
           <td class="text-start" v-else-if="item.proces_type == 3">
@@ -398,10 +568,28 @@
   </v-card>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
+      dialogSearch: false,
+      driver_name: "",
+      start_time: "",
+      end_time: "",
       search: "",
+      menu1: null,
+      menu2: null,
+      months_picker: ["asd", "asda"],
+      menu_props: {
+        closeOnClick: false,
+        closeOnContentClick: false,
+        disableKeys: true,
+        openOnClick: false,
+        maxHeight: 150,
+        offsetY: true,
+        offsetOverflow: true,
+        transition: false,
+      },
       headers: [
         {
           text: "التسلسل",
@@ -530,6 +718,63 @@ export default {
           class: "secondary white--text title",
         },
       ],
+      headers_search_table: [
+        {
+          text: "التسلسل",
+          align: "#",
+          class: "secondary white--text title",
+        },
+        {
+          text: "رقم الفاتورة",
+          align: "invoice_no",
+          class: "secondary white--text title",
+        },
+        {
+          text: "أسم الزبون ",
+          align: "name_customer",
+          class: "secondary white--text title",
+        },
+        {
+          text: "أسم المندوب ",
+          align: "representativ",
+          class: "secondary white--text title",
+        },
+        {
+          text: " الموقع  ",
+          align: "place",
+          class: "secondary white--text title",
+        },
+        {
+          text: "رقم السيارة",
+          align: "car_number",
+          class: "secondary white--text title",
+        },
+        {
+          text: "تسلسل السيارة",
+          align: "car_sequence",
+          class: "secondary white--text title",
+        },
+        {
+          text: " تسلسل الفاتورة",
+          align: "sequence",
+          class: "secondary white--text title",
+        },
+        {
+          text: " النوع ",
+          align: "type",
+          class: "secondary white--text title",
+        },
+        {
+          text: " الكمية ",
+          align: "quantity",
+          class: "secondary white--text title",
+        },
+        {
+          text: " التأريخ ",
+          align: "created_at",
+          class: "secondary white--text title",
+        },
+      ],
       excel_sale_category: {
         // الحالة: "status",
 
@@ -651,8 +896,39 @@ export default {
     table_loading() {
       return this.$store.state.saleCategory.table_loading;
     },
+    drivers() {
+      return this.$store.state.driver.drivers;
+    },
+    // searchDriverInvoicments() {
+    //   return this.$store.state.driver.searchDriverInvoicments;
+    // },
+    ...mapState("invoicement", {
+      searchDriverInvoicments: (state) => state.driver_invoicment_search,
+    }),
   },
   methods: {
+    getItem(item) {
+      this.dialogSearch = true;
+      this.item = item;
+    },
+    getDrivers() {
+      // if (this.$store.state.driver.driver_state == "finished") return;
+      this.$store.dispatch("driver/getDrivers");
+    },
+
+    async searchDriver() {
+      console.log(this.start_time);
+      console.log(this.end_time);
+      console.log(this.driver_name);
+      let data = {};
+      data.driver_name = this.driver_name;
+      data.start_time = this.start_time;
+      data.end_time = this.end_time;
+
+      await this.$store.dispatch("invoicement/searchDriverInvoiment", data);
+      console.log("here");
+      console.log(this.searchDriverInvoicments);
+    },
     // this function to change status sale category to paid
     make_paid(item) {
       console.log(item);
@@ -660,6 +936,11 @@ export default {
     },
     close() {
       this.dialog = false;
+      this.dialogSearch = false;
+      this.$store.dispatch("invoicement/resetFields");
+      this.driver_name = "";
+      this.start_time = "";
+      this.end_time = "";
     },
     queryChange(val) {
       this.searchDebounce();
@@ -722,6 +1003,7 @@ export default {
     pagination: {
       handler() {
         this.getSalesCategories();
+        this.getDrivers();
         this.sales_categories_params.page = 1;
       },
       deep: true,

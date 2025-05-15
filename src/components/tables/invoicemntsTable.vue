@@ -444,7 +444,7 @@ export default {
           class: "secondary white--text title",
         },
       ],
-      pagination: { itemsPerPage: 50 },
+      pagination: { itemsPerPage: 100 },
       items: [5, 10, 25, 50, 100],
 
       excel_invoicemnts: {
@@ -554,7 +554,7 @@ export default {
       console.log(pagination);
       let par = {
         ...pagination,
-        itemsPerPage: 50,
+        itemsPerPage: 100,
       };
       // // console.log(this.query);
       this.invoicemnt_params = par;

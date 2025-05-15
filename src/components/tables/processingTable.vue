@@ -301,6 +301,12 @@
           <td class="text-start" v-else-if="item.proces_type == 2">
             <v-chip dark color="primary"> معمل الفروسية </v-chip>
           </td>
+          <td class="text-start" v-else-if="item.proces_type == 7">
+            <v-chip color="primary">معمل الفروسية2 </v-chip>
+          </td>
+          <td class="text-start" v-else-if="item.proces_type == 8">
+            <v-chip dark color="primary">معمل العامرية2 -مطار </v-chip>
+          </td>
 
           <td class="text-start" v-else-if="item.proces_type == 3">
             <v-chip color="primary">مشترك</v-chip>
